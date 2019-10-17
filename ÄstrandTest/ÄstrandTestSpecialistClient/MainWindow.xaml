@@ -4,9 +4,35 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ÄstrandTestSpecialistClient"
+        xmlns:uicontrols="clr-namespace:UIControls;assembly=UIControls"
+        xmlns:fields="clr-namespace:UIControls.Fields;assembly=UIControls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Specialist" Height="600" Width="1000" Background="#FF1E1E1E">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <uicontrols:Container x:Name="con_RunningTests" Grid.RowSpan="2" Header="Lopende testem" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+
+        </uicontrols:Container>
+
+        <uicontrols:Container x:Name="con_History" Grid.Row="2" Header="Bestaande data" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+            <fields:ComboBoxField x:Name="cmf_TestNames" Header="Testen:" Background="#FF1E1E1E" HeaderForeground="White" ValueBackground="#FF2D2D30" ValueForeground="#FF333337"></fields:ComboBoxField>
+            <Button x:Name="btn_GetTests" Content="Data opvragen" Margin="5,5,5,5" Foreground="White" Background="#FF2D2D30" BorderBrush="Transparent" Height="30" Click="GetTests_Click"></Button>
+        </uicontrols:Container>
+
+        <uicontrols:Container x:Name="con_TestData" Grid.Column="1" Grid.ColumnSpan="4" Grid.RowSpan="3" Header="Testdata" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+
+        </uicontrols:Container>
     </Grid>
 </Window>

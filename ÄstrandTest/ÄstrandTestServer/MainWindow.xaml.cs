@@ -285,12 +285,7 @@ namespace ÄstrandTestServer
             if (tests.Count() != 0)
             {
                 foreach (string test in tests)
-                {
-                    List<byte> bytes = new List<byte>();
-                    bytes.Add((byte)test.Length);
-                    bytes.AddRange(Encoding.UTF8.GetBytes(test));
-                    this.astrandServer.Transmit(new Message(Message.ID.TEST_NAME, Message.State.OK, bytes.ToArray()), user);
-                }
+                    this.astrandServer.Transmit(new Message(Message.ID.TEST_NAME, Message.State.OK, Encoding.UTF8.GetBytes(test)), user);
             }
             else
                 this.astrandServer.Transmit(new Message(Message.ID.GET_TESTS, Message.State.ERROR, Encoding.UTF8.GetBytes("Kon geen tests vinden!")), user);

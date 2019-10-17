@@ -42,5 +42,10 @@ namespace Networking.ÄstrandTest.Net.ClientSide
         {
             this.client.Transmit(DataEncryptor.Encrypt(message.GetBytes(), DataEncryptor.NetworkKey));
         }
+
+        public void SetConnector(IÄstrandClientConnector connector)
+        {
+            this.connector = connector;
+        }
     }
 }
