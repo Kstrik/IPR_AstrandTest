@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="UIControls.Fields.ImageSelectionField"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UIControls.Fields"
+             mc:Ignorable="d">
+    <StackPanel>
+        <Label x:Name="lblHeader" Content="{Binding Parent.Parent.Header, RelativeSource={RelativeSource Mode=Self}}" Margin="0,0,0,5" Foreground="{Binding Parent.Parent.HeaderForeground, RelativeSource={RelativeSource Mode=Self}}" 
+               FontSize="{Binding Parent.Parent.FontSize, RelativeSource={RelativeSource Mode=Self}}" HorizontalAlignment="Left" VerticalAlignment="Top"></Label>
+        <Image x:Name="imgImage" Width="{Binding Parent.Parent.MaxImageSize, RelativeSource={RelativeSource Mode=Self}}"
+               Height="{Binding Parent.Parent.MaxImageSize, RelativeSource={RelativeSource Mode=Self}}"></Image>
+        <ComboBox x:Name="cmbValue" ItemsSource="{Binding Parent.Parent.Value, RelativeSource={RelativeSource Mode=Self}}" Foreground="{Binding Parent.Parent.ValueBackground, RelativeSource={RelativeSource Mode=Self}}" 
+                 Background="{Binding Parent.Parent.ValueBackground, RelativeSource={RelativeSource Mode=Self}}" BorderBrush="{Binding Parent.Parent.ValueBorderBrush, RelativeSource={RelativeSource Mode=Self}}" 
+                 FontSize="{Binding Parent.Parent.FontSize, RelativeSource={RelativeSource Mode=Self}}" HorizontalAlignment="Stretch" VerticalAlignment="Top" SelectionChanged="CmbValue_SelectionChanged"></ComboBox>
+    </StackPanel>
+</UserControl>

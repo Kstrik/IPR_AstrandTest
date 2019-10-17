@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ÄstrandTestServer", "Ästr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ÄstrandTestSpecialistClient", "ÄstrandTestSpecialistClient\ÄstrandTestSpecialistClient.csproj", "{B61C930D-6687-4E15-ADC6-75829E7A012F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Networking", "Networking\Networking.csproj", "{66F79EB5-270B-4AE0-A47E-B20570E50442}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Networking", "Networking\Networking.csproj", "{66F79EB5-270B-4AE0-A47E-B20570E50442}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

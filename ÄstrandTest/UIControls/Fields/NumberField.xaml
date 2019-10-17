@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="UIControls.Fields.NumberField"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:UIControls.Fields"
+             x:Name="_this"
+             mc:Ignorable="d" 
+             Margin="5,5,5,5">
+    <StackPanel>
+        <Label x:Name="lblHeader" Content="{Binding ElementName=_this, Path=Header}" Margin="0,0,0,5" Foreground="{Binding ElementName=_this, Path=HeaderForeground}" 
+               FontSize="{Binding ElementName=_this, Path=FontSize}" HorizontalAlignment="Left" VerticalAlignment="Top"></Label>
+        <TextBox x:Name="txbValue" Text="{Binding ElementName=_this, Path=Value}" Foreground="{Binding ElementName=_this, Path=ValueForeground}" 
+                 Background="{Binding ElementName=_this, Path=ValueBackground}" BorderBrush="{Binding ElementName=_this, Path=ValueBorderBrush}" 
+                 FontSize="{Binding ElementName=_this, Path=FontSize}" Width="40" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+    </StackPanel>
+</UserControl>

@@ -8,8 +8,10 @@ namespace Networking.ÄstrandTest
     {
         public enum ID
         {
-            REGISTER = 0x00,
-            LOGIN = 0x01,
+            CLIENT_REGISTER = 0x00,
+            SPECIALIST_REGISTER = 0x00,
+            CLIENT_LOGIN = 0x01,
+            SPECIALIST_LOGIN = 0x01,
             LOGOUT = 0x02,
 
             START_TEST = 0x03,
