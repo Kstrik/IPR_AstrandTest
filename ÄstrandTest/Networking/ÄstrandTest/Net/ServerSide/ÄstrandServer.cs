@@ -33,7 +33,7 @@ namespace Networking.ÄstrandTest.Net.ServerSide
 
         public void Transmit(Message message, UserAccount user)
         {
-            this.server.Transmit(message.GetBytes(), user.Connection);
+            this.server.Transmit(DataEncryptor.Encrypt(message.GetBytes(), DataEncryptor.NetworkKey), user.Connection);
         }
 
         public void Broadcast(Message message)
@@ -44,7 +44,7 @@ namespace Networking.ÄstrandTest.Net.ServerSide
         public void OnDataReceived(byte[] data, ClientConnection connection)
         {
             UserAccount userAccount = GetUser(connection);
-            this.connector?.OnMessageReceived(Message.Parse(data), userAccount);
+            this.connector?.OnMessageReceived(Message.Parse(DataEncryptor.Decrypt(data, DataEncryptor.NetworkKey)), userAccount);
         }
 
         public void OnClientConnected(ClientConnection connection)

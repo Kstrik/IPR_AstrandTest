@@ -8,22 +8,36 @@ namespace Networking.ÄstrandTest
     {
         public enum ID
         {
-            CLIENT_REGISTER = 0x00,
-            SPECIALIST_REGISTER = 0x00,
-            CLIENT_LOGIN = 0x01,
-            SPECIALIST_LOGIN = 0x01,
-            LOGOUT = 0x02,
+            CLIENT_REGISTER,
+            SPECIALIST_REGISTER,
+            CLIENT_LOGIN,
+            SPECIALIST_LOGIN,
+            LOGOUT,
 
-            START_TEST = 0x03,
-            END_TEST = 0x04,
-            BIKEDATA = 0x05
+            START_TEST,
+            END_TEST,
+            BIKEDATA,
+
+            GET_TESTS,
+            GET_TEST_DATA,
+            TEST_DATA,
+            TEST_DATA_BEGIN,
+            TEST_DATA_END,
         }
 
         public enum State
         {
-            NONE = 0x00,
-            ERROR = 0x01,
-            OK = 0x02
+            NONE,
+            ERROR,
+            OK
+        }
+
+        public enum ValueId
+        {
+            HEARTRATE,
+            DISTANCE,
+            SPEED,
+            CYCLE_RHYTHM
         }
 
         private byte id;

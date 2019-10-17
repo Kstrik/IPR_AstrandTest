@@ -49,7 +49,7 @@ namespace Networking.ÄstrandTest.BikeCommunication
         public override byte[] GetBytes()
         {
             return new byte[8] {
-                this.pageID,
+                this.PageID,
                 this.equipmentTypeBitField,
                 this.elapsedTime,
                 this.distanceTraveled,
@@ -63,17 +63,6 @@ namespace Networking.ÄstrandTest.BikeCommunication
         public override int GetLength()
         {
             return 9;
-        }
-
-        public override Page SimulateNewPage(double variance, Random random)
-        {
-            Page16 page = new Page16(this.equipmentTypeBitField, 
-                                    RandomWithVariance(random, this.elapsedTime, variance),
-                                    (byte)(this.distanceTraveled + variance), 
-                                    RandomWithVariance(random, this.speedMSB, variance), 
-                                    RandomWithVariance(random, this.heartrate, variance), 
-                                    this.capabillitiesBitField, this.feStateBitField);
-            return page;
         }
     }
 }

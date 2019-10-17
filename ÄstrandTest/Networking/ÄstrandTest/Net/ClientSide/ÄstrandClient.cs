@@ -30,7 +30,7 @@ namespace Networking.ÄstrandTest.Net.ClientSide
 
         public void OnDataReceived(byte[] data)
         {
-            this.connector?.OnMessageReceived(Message.Parse(data));
+            this.connector?.OnMessageReceived(Message.Parse(DataEncryptor.Decrypt(data, DataEncryptor.NetworkKey)));
         }
 
         public void OnDisconnect()
@@ -40,7 +40,7 @@ namespace Networking.ÄstrandTest.Net.ClientSide
 
         public void Transmit(Message message)
         {
-            this.client.Transmit(message.GetBytes());
+            this.client.Transmit(DataEncryptor.Encrypt(message.GetBytes(), DataEncryptor.NetworkKey));
         }
     }
 }

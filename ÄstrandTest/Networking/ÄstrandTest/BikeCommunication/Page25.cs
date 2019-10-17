@@ -47,7 +47,7 @@ namespace Networking.ÄstrandTest.BikeCommunication
         {
             return new byte[8]
             {
-                this.pageID,
+                this.PageID,
                 this.updateEventCount,
                 this.instantaneousCadence,
                 this.accumulatedPowerLSB,
@@ -61,17 +61,6 @@ namespace Networking.ÄstrandTest.BikeCommunication
         public override int GetLength()
         {
             return 9;
-        }
-
-        public override Page SimulateNewPage(double variance, Random random)
-        {
-            Page25 page = new Page25(RandomWithVariance(random, this.updateEventCount, variance),
-                                        this.instantaneousCadence,
-                                        (byte)(this.accumulatedPowerMSB + RandomWithVariance(random, this.instantaneousPowerMSB, variance)),
-                                        RandomWithVariance(random, this.instantaneousPowerMSB, variance),
-                                        this.trainerField,
-                                        this.bitFields);
-            return page;
         }
     }
 }

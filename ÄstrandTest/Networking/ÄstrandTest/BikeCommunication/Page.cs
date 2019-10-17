@@ -8,11 +8,17 @@ namespace Networking.ÄstrandTest.BikeCommunication
 {
     public abstract class Page
     {
-        public byte pageID;
+        public enum PageType
+        {
+            PAGE16 = 16,
+            PAGE25 = 25
+        }
+
+        public byte PageID;
 
         public Page(byte pageID)
         {
-            this.pageID = pageID;
+            this.PageID = pageID;
         }
 
         public abstract byte[] GetBytes();
@@ -37,17 +43,9 @@ namespace Networking.ÄstrandTest.BikeCommunication
             return (result);
         }
 
-        public abstract Page SimulateNewPage(double variance, Random random);
-
         public override string ToString()
         {
             return BitConverter.ToString(GetBytes()).Replace("-", " ");
-        }
-
-        public static byte RandomWithVariance(Random random, byte value, double variance)
-        {
-            double valueWithPrc = ((value / 100) * variance);
-            return (byte)random.Next((int)(value - valueWithPrc), (int)(value + valueWithPrc));
         }
     }
 }

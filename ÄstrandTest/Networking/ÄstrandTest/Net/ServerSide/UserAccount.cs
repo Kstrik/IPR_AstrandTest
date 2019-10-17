@@ -10,7 +10,6 @@ namespace Networking.ÄstrandTest.Net.ServerSide
         public ClientConnection Connection;
 
         public string Username;
-        public string Password;
 
         public bool IsAuthorized;
 
