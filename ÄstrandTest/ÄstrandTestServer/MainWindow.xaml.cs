@@ -135,6 +135,7 @@ namespace ÄstrandTestServer
                             {
                                 (int birthYear, int weight, bool isMan) personalData = FileHandler.GetPersonalData(user.Username);
                                 this.currentTests.Add(user, new ÄstrandTest(user.Username, personalData.birthYear, personalData.weight, personalData.isMan));
+                                BroadcastToSpecialists(new Message(Message.ID.START_TEST, Message.State.OK, Encoding.UTF8.GetBytes(user.Username)));
                             }              
                         }
                         break;
@@ -147,34 +148,30 @@ namespace ÄstrandTestServer
                             {
                                 FileHandler.SaveAstrandTestData(this.currentTests[user]);
                                 this.currentTests.Remove(user);
+                                BroadcastToSpecialists(new Message(Message.ID.END_TEST, Message.State.OK, Encoding.UTF8.GetBytes(user.Username)));
                             }
                         }
                         break;
                     }
                 case Message.ID.BIKEDATA:
                     {
-                        if (user.IsAuthorized && this.clients.Contains(user))
+                        if (user.IsAuthorized && this.clients.Contains(user) && this.currentTests.Keys.Contains(user))
                             HandleBikeData(message.GetContent(), user);
                         break;
                     }
                 case Message.ID.GET_TESTS:
                     {
+                        if (user.IsAuthorized)
+                            HandleGetTests(user);
                         break;
                     }
                 case Message.ID.GET_TEST_DATA:
                     {
-                        break;
-                    }
-                case Message.ID.TEST_DATA_BEGIN:
-                    {
-                        break;
-                    }
-                case Message.ID.TEST_DATA_END:
-                    {
-                        break;
-                    }
-                case Message.ID.TEST_DATA:
-                    {
+                        if (user.IsAuthorized)
+                        {
+                            string filename = Encoding.UTF8.GetString(message.GetContent());
+                            HandleGetTestData(filename, user);
+                        }
                         break;
                     }
             }
@@ -228,14 +225,90 @@ namespace ÄstrandTestServer
                 user.IsAuthorized = false;
 
             if (this.clients.Contains(user))
+            {
                 this.clients.Remove(user);
+                if (this.currentTests.Keys.Contains(user))
+                    this.currentTests.Remove(user);
+            }
             else if (this.specialists.Contains(user))
                 this.specialists.Remove(user);
         }
 
-        private void HandleBikeData(byte[] bikeData, UserAccount userAccount)
+        private void HandleBikeData(byte[] bikeData, UserAccount user)
         {
+            List<byte> bikeDataBytes = new List<byte>();
+            bikeDataBytes.Add((byte)user.Username.Length);
+            bikeDataBytes.AddRange(Encoding.UTF8.GetBytes(user.Username));
+            bikeDataBytes.AddRange(bikeData);
+            BroadcastToSpecialists(new Message(Message.ID.BIKEDATA, Message.State.OK, bikeDataBytes.ToArray()));
 
+            ÄstrandTest astrandTest = this.currentTests[user];
+
+            List<byte> bytes = new List<byte>(bikeData);
+
+            for (int i = 0; i < bytes.Count; i += 2)
+            {
+                Message.ValueId valueType = (Message.ValueId)bytes[i];
+                int value = bytes[i + 1];
+                DateTime dateTime = DateTime.Now;
+
+                switch (valueType)
+                {
+                    case Message.ValueId.HEARTRATE:
+                        {
+                            astrandTest.HeartrateValues.Add((heartRate: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.DISTANCE:
+                        {
+                            astrandTest.DistanceValues.Add((distance: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.SPEED:
+                        {
+                            astrandTest.SpeedValues.Add((speed: value, time: dateTime));
+                            break;
+                        }
+                    case Message.ValueId.CYCLE_RHYTHM:
+                        {
+                            astrandTest.CycleRhythmValues.Add((cycleRhythm: value, time: dateTime));
+                            break;
+                        }
+                }
+            }
+        }
+
+        private void HandleGetTests(UserAccount user)
+        {
+            List<string> tests = FileHandler.GetAllTests();
+
+            if (tests.Count() != 0)
+            {
+                foreach (string test in tests)
+                {
+                    List<byte> bytes = new List<byte>();
+                    bytes.Add((byte)test.Length);
+                    bytes.AddRange(Encoding.UTF8.GetBytes(test));
+                    this.astrandServer.Transmit(new Message(Message.ID.TEST_NAME, Message.State.OK, bytes.ToArray()), user);
+                }
+            }
+            else
+                this.astrandServer.Transmit(new Message(Message.ID.GET_TESTS, Message.State.ERROR, Encoding.UTF8.GetBytes("Kon geen tests vinden!")), user);
+        }
+
+        private void HandleGetTestData(string filename, UserAccount user)
+        {
+            if (FileHandler.TestExists(filename))
+            {
+                ÄstrandTest astrandTest = FileHandler.GetAstrandTestData(filename);
+
+                if (astrandTest != null)
+                    astrandTest.Transmit(user);
+                else
+                    this.astrandServer.Transmit(new Message(Message.ID.GET_TEST_DATA, Message.State.ERROR, Encoding.UTF8.GetBytes("Kon test niet openen!")), user);
+            }
+            else
+                this.astrandServer.Transmit(new Message(Message.ID.GET_TEST_DATA, Message.State.ERROR, Encoding.UTF8.GetBytes("Kon test niet vinden!")), user);
         }
 
         public void OnUserConnected(UserAccount user)

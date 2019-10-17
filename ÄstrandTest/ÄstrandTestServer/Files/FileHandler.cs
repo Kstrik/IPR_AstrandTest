@@ -170,5 +170,11 @@ namespace ÄstrandTestServer.Files
 
             return bsns;
         }
+
+
+        public static bool TestExists(string username)
+        {
+            return (Directory.GetFiles(testsFolderPath).Where(u => u.Contains(username)).Count() != 0);
+        }
     }
 }

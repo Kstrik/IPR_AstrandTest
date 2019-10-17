@@ -19,6 +19,7 @@ namespace Networking.ÄstrandTest
             BIKEDATA,
 
             GET_TESTS,
+            TEST_NAME,
             GET_TEST_DATA,
             TEST_DATA,
             TEST_DATA_BEGIN,
