@@ -200,7 +200,15 @@ namespace ÄstrandTestServer
                 user.Username = username;
                 user.IsAuthorized = true;
                 this.clients.Add(user);
-                this.astrandServer.Transmit(new Message(Message.ID.CLIENT_LOGIN, Message.State.OK, null), user);
+
+                (int birthYear, int weight, bool isMan) personalData = FileHandler.GetPersonalData(user.Username);
+                List<byte> bytes = new List<byte>();
+                bytes.Add((byte)personalData.birthYear.ToString().Length);
+                bytes.AddRange(Encoding.UTF8.GetBytes(personalData.birthYear.ToString()));
+                bytes.Add((byte)personalData.weight);
+                bytes.Add((personalData.isMan) ? (byte)1 : (byte)0);
+
+                this.astrandServer.Transmit(new Message(Message.ID.CLIENT_LOGIN, Message.State.OK, bytes.ToArray()), user);
             }
             else
                 this.astrandServer.Transmit(new Message(Message.ID.CLIENT_LOGIN, Message.State.ERROR, Encoding.UTF8.GetBytes("Username or password is incorrect!")), user);

@@ -100,18 +100,22 @@ namespace ÄstrandTestFietsClient
                             this.elapsedSeconds = 0;
                             this.state = State.COOLDOWN;
                             this.timer.Interval = TimeSpan.FromMinutes(1).TotalMilliseconds;
+                            this.currentResistance = 40;
+                            this.bike.SetResistence((byte)this.currentResistance);
                         }
                         break;
                     }
                 case State.COOLDOWN:
                     {
+                        int workloadReading = this.workload;
+                        
                         if (!this.hasSteadyState)
                             this.averageHeartrate = GetAverageHeartrate(this.heartrates);
 
                         if (this.isMan)
-                            this.vo2 = (0.00212 * this.workload + 0.299) / (0.769 * this.averageHeartrate - 48.5) * 1000;
+                            this.vo2 = (0.00212 * workloadReading + 0.299) / (0.769 * this.averageHeartrate - 48.5) * 1000;
                         else
-                            this.vo2 = (0.00193 * this.workload + 0.326) / (0.769 * this.averageHeartrate - 56.1) * 1000;
+                            this.vo2 = (0.00193 * workloadReading + 0.326) / (0.769 * this.averageHeartrate - 56.1) * 1000;
 
                         if (this.age >= 35)
                             this.vo2 *= GetAgeFactor();
@@ -135,6 +139,12 @@ namespace ÄstrandTestFietsClient
             this.timer.Interval = TimeSpan.FromMinutes(1).TotalMilliseconds;
             this.state = State.WARMUP;
             this.timer.Start();
+        }
+
+        public void Stop()
+        {
+            this.state = State.NONE;
+            this.timer.Stop();
         }
 
         public void OnHeartrateReceived(int heartrate)
@@ -169,7 +179,7 @@ namespace ÄstrandTestFietsClient
                         this.currentResistance += 5;
                     else if (this.currentResistance > 30)
                         this.currentResistance -= 5;
-                                        this.bike.SetResistence((byte)this.currentResistance);
+                    this.bike.SetResistence((byte)this.currentResistance);
                 }
             }
         }

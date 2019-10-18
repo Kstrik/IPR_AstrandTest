@@ -46,7 +46,7 @@
                 <Button x:Name="btn_ConnectToBike" Content="Verbind met fiets" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="ConnectToBike_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
                 <Button x:Name="btn_SendTestData" Content="Send testdata" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="SendTestData_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
                 <Button x:Name="btn_StopSendTestData" Content="Stop testdata" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="StopSendTestData_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
-                <Button Content="Start test" Click="Button_Click"></Button>
+                <Button x:Name="btn_StartStopTest" Content="Start test" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="StartStopTest_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5" ></Button>
             </StackPanel>
         </uicontrols:Container>
     </Grid>

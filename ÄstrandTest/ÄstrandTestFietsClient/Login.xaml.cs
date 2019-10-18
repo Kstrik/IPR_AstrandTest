@@ -194,6 +194,14 @@ namespace ÄstrandTestFietsClient
                             {
                                 lbl_LoginError.Visibility = Visibility.Hidden;
 
+                                int birthYear = int.Parse(Encoding.UTF8.GetString(content.GetRange(1, content[0]).ToArray()));
+                                int weight = content[content[0] + 1];
+                                bool isMan = (content[content[0] + 2] == 1);
+                                UserLogin.Username = txb_LoginUsername.Text;
+                                UserLogin.BirthYear = birthYear;
+                                UserLogin.Weight = weight;
+                                UserLogin.isMan = isMan;
+
                                 MainWindow mainWindow = new MainWindow(this.astrandClient);
                                 mainWindow.Show();
                                 this.Close();

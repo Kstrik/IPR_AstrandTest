@@ -186,10 +186,17 @@ namespace ÄstrandTestFietsClient
             }));
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void StartStopTest_Click(object sender, RoutedEventArgs e)
         {
-            this.astrandTest = new AvansAstrandTest(this.bike, true, 10);
-            this.astrandTest.Start();
+            if((sender as Button).Content.ToString() == "Start test")
+            {
+                this.astrandTest = new AvansAstrandTest(this.bike, UserLogin.isMan, DateTime.Now.Year - UserLogin.BirthYear);
+                this.astrandTest.Start();
+            }
+            else
+            {
+                this.astrandTest.Stop();
+            }
         }
     }
 }
