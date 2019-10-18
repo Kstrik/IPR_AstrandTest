@@ -95,13 +95,13 @@ namespace ÄstrandTestServer.Net
                         bytes.AddRange(Encoding.UTF8.GetBytes(CycleRhythmValues[i].time.ToString()));
                     }
 
-                    userAccount.Connection.Transmit(DataEncryptor.Encrypt(new Message(Message.ID.TEST_DATA, Message.State.OK, bytes.ToArray()).GetBytes(), "Test"));
+                    userAccount.Connection.Transmit(DataEncryptor.Encrypt(new Message(Message.ID.TEST_DATA, Message.State.OK, bytes.ToArray()).GetBytes(), DataEncryptor.NetworkKey));
                 }
 
                 List<byte> endBytes = new List<byte>();
                 endBytes.Add((byte)this.Username.Length);
                 endBytes.AddRange(Encoding.UTF8.GetBytes(this.Username));
-                userAccount.Connection.Transmit(DataEncryptor.Encrypt(new Message(Message.ID.TEST_DATA_END, Message.State.OK, endBytes.ToArray()).GetBytes(), "Test"));
+                userAccount.Connection.Transmit(DataEncryptor.Encrypt(new Message(Message.ID.TEST_DATA_END, Message.State.OK, endBytes.ToArray()).GetBytes(), DataEncryptor.NetworkKey));
             }
         }
 

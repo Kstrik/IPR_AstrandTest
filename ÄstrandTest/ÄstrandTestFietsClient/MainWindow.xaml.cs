@@ -33,6 +33,8 @@ namespace ÄstrandTestFietsClient
 
         private LiveChartControl liveChartControl;
 
+        private Thread testDataThread;
+
         public MainWindow(ÄstrandClient astrandClient)
         {
             InitializeComponent();
@@ -83,6 +85,18 @@ namespace ÄstrandTestFietsClient
             SendTestBikeData();
             btn_SendTestData.IsEnabled = false;
             btn_SendTestData.Foreground = Brushes.Gray;
+            btn_StopSendTestData.IsEnabled = true;
+            btn_StopSendTestData.Foreground = Brushes.White;
+        }
+
+        private void StopSendTestData_Click(object sender, RoutedEventArgs e)
+        {
+            this.testDataThread.Abort();
+            this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, null));
+            btn_SendTestData.IsEnabled = true;
+            btn_SendTestData.Foreground = Brushes.White;
+            btn_StopSendTestData.IsEnabled = false;
+            btn_StopSendTestData.Foreground = Brushes.Gray;
         }
 
         public void OnMessageReceived(Message message)
@@ -97,7 +111,7 @@ namespace ÄstrandTestFietsClient
 
         private void SendTestBikeData()
         {
-            new Thread(() =>
+            this.testDataThread = new Thread(() =>
             {
                 Random random = new Random();
 
@@ -135,7 +149,8 @@ namespace ÄstrandTestFietsClient
 
                     this.astrandClient.Transmit(new Message(Message.ID.BIKEDATA, Message.State.NONE, bytes.ToArray()));
                 }
-            }).Start();
+            });
+            this.testDataThread.Start();
         }
 
         public void HandleClientMessage(ClientMessage clientMessage)

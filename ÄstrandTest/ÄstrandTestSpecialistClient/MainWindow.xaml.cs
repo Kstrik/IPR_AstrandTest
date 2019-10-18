@@ -176,7 +176,10 @@ namespace ÄstrandTestSpecialistClient
                         case Message.ID.END_TEST:
                             {
                                 if (message.GetState() == Message.State.OK)
+                                {
                                     HandleRemoveClient(Encoding.UTF8.GetString(message.GetContent()));
+                                    this.astrandClient.Transmit(new Message(Message.ID.GET_TESTS, Message.State.OK, null));
+                                }
                                 break;
                             }
                         case Message.ID.BIKEDATA:

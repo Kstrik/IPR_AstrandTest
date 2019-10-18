@@ -57,13 +57,19 @@ namespace Networking.ÄstrandTest.Net.ServerSide
         public void OnClientDisconnected(ClientConnection connection)
         {
             UserAccount userAccount = GetUser(connection);
-            this.ConnectedUsers.Remove(userAccount);
-            this.connector?.OnUserDisconnected(userAccount);
+            if(userAccount != null)
+            {
+                this.ConnectedUsers.Remove(userAccount);
+                this.connector?.OnUserDisconnected(userAccount);
+            }
         }
 
         private UserAccount GetUser(ClientConnection connection)
         {
-            return this.ConnectedUsers.Where(u => u.Connection == connection)?.First();
+            if (this.ConnectedUsers.Where(u => u.Connection == connection).Count() != 0)
+                return this.ConnectedUsers.Where(u => u.Connection == connection)?.First();
+            else
+                return null;
         }
     }
 }

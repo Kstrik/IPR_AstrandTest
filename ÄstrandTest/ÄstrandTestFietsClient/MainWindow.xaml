@@ -45,6 +45,7 @@
                 <fields:TextField x:Name="txf_BikeId" Value="" Header="Fiets ID:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="12" HorizontalAlignment="Stretch"></fields:TextField>
                 <Button x:Name="btn_ConnectToBike" Content="Verbind met fiets" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="ConnectToBike_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
                 <Button x:Name="btn_SendTestData" Content="Send testdata" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="SendTestData_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
+                <Button x:Name="btn_StopSendTestData" Content="Stop testdata" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="StopSendTestData_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
             </StackPanel>
         </uicontrols:Container>
     </Grid>

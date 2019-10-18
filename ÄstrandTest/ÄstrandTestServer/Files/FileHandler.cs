@@ -117,7 +117,10 @@ namespace ÄstrandTestServer.Files
             testJson.Add("speeds", speedsJson);
             testJson.Add("cyclerhythms", cycleRhythmsjson);
 
-            File.WriteAllText(testsFolderPath + @"/" + testData.Username + " " + DateTime.Now.ToString() + ".json", DataEncryptor.Encrypt(testJson.ToString(), DataEncryptor.FileKey));
+            string filename = testData.Username + "_" + DateTime.Now.ToString();
+            filename = filename.Replace("/", "-");
+            filename = filename.Replace(":", "#");
+            File.WriteAllText(testsFolderPath + @"/" + filename + ".json", DataEncryptor.Encrypt(testJson.ToString(), DataEncryptor.FileKey));
         }
 
         public static (int birthYear, int weight, bool isMan) GetPersonalData(string username)
