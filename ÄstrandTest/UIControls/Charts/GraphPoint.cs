@@ -77,6 +77,8 @@ namespace UIControls.Charts
         public void Remove()
         {
             this.canvas.Children.Remove(this.ellipse);
+            this.canvas.Children.Remove(this.rectangle);
+            this.canvas.Children.Remove(this.label);
         }
 
         public void OnMouseMoved(System.Windows.Point cursorPosition)

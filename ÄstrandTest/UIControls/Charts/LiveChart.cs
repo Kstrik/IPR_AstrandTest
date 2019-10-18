@@ -288,7 +288,11 @@ namespace UIControls.Charts
 
         public void Clear()
         {
-            this.canvas.Children.Clear();
+            this.polygon.Points.Clear();
+            foreach (GraphPoint graphPoint in this.graphPoints)
+                graphPoint.Remove();
+            this.graphPoints.Clear();
+            this.data.Clear();
         }
 
         public static ColorTheme BlueTheme = new ColorTheme(new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF007ACC")),

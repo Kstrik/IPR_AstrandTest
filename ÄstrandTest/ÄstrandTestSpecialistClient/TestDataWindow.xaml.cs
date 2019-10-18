@@ -35,7 +35,10 @@ namespace ÄstrandTestSpecialistClient
         private int weight;
         private bool isMan;
 
-        public TestDataWindow(string username, int birthYear, int weight, bool isMan, int maxIntervals)
+        private bool hasSteadyState;
+        private double vo2;
+
+        public TestDataWindow(string username, int birthYear, int weight, bool isMan, int maxIntervals, bool hasSteadyState, double vo2)
         {
             InitializeComponent();
 
@@ -43,6 +46,9 @@ namespace ÄstrandTestSpecialistClient
             this.birthYear = birthYear;
             this.weight = weight;
             this.isMan = isMan;
+
+            this.hasSteadyState = hasSteadyState;
+            this.vo2 = vo2;
 
             this.testData = new ÄstrandTest();
             this.maxIntervals = maxIntervals;
@@ -66,6 +72,13 @@ namespace ÄstrandTestSpecialistClient
             Grid.SetRow(this.distanceChart, 0);
             Grid.SetRow(this.speedChart, 1);
             Grid.SetRow(this.cycleRhythmChart, 1);
+
+            lbl_Username.Content = username;
+            lbl_BirthYear.Content = birthYear;
+            lbl_Weight.Content = weight;
+            lbl_Gender.Content = (isMan) ? "Man" : "Vrouw";
+            lbl_SteadyState.Content = (hasSteadyState) ? "JA" : "NEE";
+            lbl_VO2.Content = $"{vo2} {((hasSteadyState) ? "" : "Er was geen steady state, vo2 meeting is niet betrouwbaar!")}";
         }
 
         public void ProcessHistoryData()

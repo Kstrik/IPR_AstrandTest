@@ -24,7 +24,7 @@ namespace ÄstrandTestFietsClient
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IÄstrandClientConnector, IClientMessageReceiver
+    public partial class MainWindow : Window, IÄstrandClientConnector, IClientMessageReceiver, IAvansAstrandTestConnector
     {
         private ÄstrandClient astrandClient;
 
@@ -87,7 +87,7 @@ namespace ÄstrandTestFietsClient
 
         private void SendTestData_Click(object sender, RoutedEventArgs e)
         {
-            this.astrandClient.Transmit(new Message(Message.ID.START_TEST, Message.State.NONE, null));
+            //this.astrandClient.Transmit(new Message(Message.ID.START_TEST, Message.State.NONE, null));
             SendTestBikeData();
             btn_SendTestData.IsEnabled = false;
             btn_SendTestData.Foreground = Brushes.Gray;
@@ -100,7 +100,7 @@ namespace ÄstrandTestFietsClient
             if(this.testDataThread != null)
             {
                 this.testDataThread.Abort();
-                this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, null));
+                //this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, null));
                 btn_SendTestData.IsEnabled = true;
                 btn_SendTestData.Foreground = Brushes.White;
                 btn_StopSendTestData.IsEnabled = false;
@@ -132,31 +132,23 @@ namespace ÄstrandTestFietsClient
                     clientMessage.HasHeartbeat = true;
                     clientMessage.HasPage16 = true;
                     clientMessage.HasPage25 = true;
-                    clientMessage.Heartbeat = (byte)random.Next(10, 100);
+                    clientMessage.Heartbeat = (byte)90;
                     clientMessage.Distance = (byte)random.Next(10, 100);
                     clientMessage.Speed = (byte)random.Next(10, 100);
                     clientMessage.Cadence = (byte)random.Next(10, 100);
                     HandleClientMessage(clientMessage);
 
-                    List<byte> bytes = new List<byte>();
+                    //List<byte> bytes = new List<byte>();
                     //bytes.Add((byte)Message.ValueId.HEARTRATE);
-                    //bytes.Add((byte)random.Next(10, 100));
+                    //bytes.Add(clientMessage.Heartbeat);
                     //bytes.Add((byte)Message.ValueId.DISTANCE);
-                    //bytes.Add((byte)random.Next(5, 20));
+                    //bytes.Add(clientMessage.Distance);
                     //bytes.Add((byte)Message.ValueId.SPEED);
-                    //bytes.Add((byte)random.Next(0, 50));
+                    //bytes.Add(clientMessage.Speed);
                     //bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
-                    //bytes.Add((byte)random.Next(20, 60));
-                    bytes.Add((byte)Message.ValueId.HEARTRATE);
-                    bytes.Add(clientMessage.Heartbeat);
-                    bytes.Add((byte)Message.ValueId.DISTANCE);
-                    bytes.Add(clientMessage.Distance);
-                    bytes.Add((byte)Message.ValueId.SPEED);
-                    bytes.Add(clientMessage.Speed);
-                    bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
-                    bytes.Add(clientMessage.Cadence);
+                    //bytes.Add(clientMessage.Cadence);
 
-                    this.astrandClient.Transmit(new Message(Message.ID.BIKEDATA, Message.State.NONE, bytes.ToArray()));
+                    //this.astrandClient.Transmit(new Message(Message.ID.BIKEDATA, Message.State.NONE, bytes.ToArray()));
                 }
             });
             this.testDataThread.Start();
@@ -164,6 +156,9 @@ namespace ÄstrandTestFietsClient
 
         public void HandleClientMessage(ClientMessage clientMessage)
         {
+            if(this.astrandTest != null && this.astrandTest.IsRunning)
+                this.astrandClient.Transmit(new Message(Message.ID.BIKEDATA, Message.State.NONE, clientMessage.GetData()));
+
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
                 if (clientMessage.HasHeartbeat)
@@ -190,13 +185,127 @@ namespace ÄstrandTestFietsClient
         {
             if((sender as Button).Content.ToString() == "Start test")
             {
-                this.astrandTest = new AvansAstrandTest(this.bike, UserLogin.isMan, DateTime.Now.Year - UserLogin.BirthYear);
+                (sender as Button).Content = "Stop test";
+
+                this.liveChartControl.GetLiveChart().Clear();
+                lbl_LastHeartrate.Content = "Nog geen meeting gedaan";
+                lbl_Message.Content = "";
+                lbl_SteadyState.Content = "NEE";
+                lbl_SteadyState.Foreground = Brushes.Orange;
+                lbl_VO2.Content = "Nog niet berekend";
+                lbl_VO2.Foreground = Brushes.Orange;
+
+                SendTestBikeData();
+
+                this.astrandTest = new AvansAstrandTest(this.bike, UserLogin.isMan, DateTime.Now.Year - UserLogin.BirthYear, this);
                 this.astrandTest.Start();
             }
             else
             {
+                (sender as Button).Content = "Start test";
+
+                if (this.testDataThread != null)
+                    this.testDataThread.Abort();
+
                 this.astrandTest.Stop();
             }
+        }
+
+        public void OnAstrandTestStart()
+        {
+            this.astrandClient.Transmit(new Message(Message.ID.START_TEST, Message.State.NONE, null));
+        }
+
+        public void OnAstrandTestEnd(bool hasSteadyState, double vo2)
+        {
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                lbl_VO2.Content = Math.Round(vo2, 2).ToString() + ((hasSteadyState) ? "" : " (Steady state kon niet worden berekend!)");
+                lbl_VO2.Foreground = Brushes.Green;
+            }));
+
+            List<byte> bytes = new List<byte>();
+            bytes.Add((hasSteadyState) ? (byte)1 : (byte)0);
+            bytes.AddRange(Encoding.UTF8.GetBytes(vo2.ToString()));
+            this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, bytes.ToArray()));
+        }
+
+        public void OnAstrandTestAbort()
+        {
+            this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, null));
+        }
+
+        public void OnAstrandTestToFast()
+        {
+            lbl_Message.Content = "Je fietst te snel!";
+            lbl_Message.Foreground = Brushes.Orange;
+        }
+
+        public void OnAstrandTestToSlow()
+        {
+            lbl_Message.Content = "Je fietst niet snel genoeg!";
+            lbl_Message.Foreground = Brushes.Orange;
+        }
+
+        public void OnAstrandTestGoodSpeed()
+        {
+            lbl_Message.Content = "Je fietst op een goed tempo!";
+            lbl_Message.Foreground = Brushes.Green;
+        }
+
+        public void OnAstrandTestSetResistance(int resistance)
+        {
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                lbl_CurrentResitance.Content = resistance;
+            }));
+        }
+
+        public void OnAstrandTestSteadyStateReached()
+        {
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                lbl_SteadyState.Content = "JA";
+                lbl_SteadyState.Foreground = Brushes.Green;
+            }));
+        }
+
+        public void OnAstrandTestLastHeartrateMeasured(int heartrate)
+        {
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                lbl_LastHeartrate.Content = heartrate;
+            }));
+        }
+
+        public void OnAstrandTestLogStateAndCountdown(AvansAstrandTest.State state, string timestring)
+        {
+            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            {
+                lbl_Time.Content = timestring;
+
+                switch (state)
+                {
+                    case AvansAstrandTest.State.NONE:
+                        lbl_Fase.Content = "NIET BEZIG";
+                        break;
+                    case AvansAstrandTest.State.WARMUP:
+                        lbl_Fase.Content = "WARMUP";
+                        break;
+                    case AvansAstrandTest.State.TESTFASE1:
+                        lbl_Fase.Content = "TESTFASE 1";
+                        break;
+                    case AvansAstrandTest.State.TESTFASE2:
+                        lbl_Fase.Content = "TESTFASE 2";
+                        break;
+                    case AvansAstrandTest.State.COOLDOWN:
+                        lbl_Message.Content = "";
+                        lbl_Fase.Content = "COOLDOWN";
+                        break;
+                    default:
+                        break;
+                }
+            }));
         }
     }
 }

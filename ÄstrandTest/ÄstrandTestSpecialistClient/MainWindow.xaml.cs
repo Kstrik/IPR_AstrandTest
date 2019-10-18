@@ -135,7 +135,11 @@ namespace ÄstrandTestSpecialistClient
                                     int weight = content[username.Length + content[username.Length + 1] + 2];
                                     bool isMan = (content[username.Length + content[username.Length + 1] + 3] == 1);
 
-                                    this.testDataWindow = new TestDataWindow(username, birthYear, weight, isMan, 20);
+                                    bool hasSteadyState = (content[username.Length + content[username.Length + 1] + 4] == 1);
+                                    int index = username.Length + content[username.Length + 1] + 5;
+                                    double vo2 = double.Parse(Encoding.UTF8.GetString(content.GetRange(index + 1, content[index]).ToArray()));
+
+                                    this.testDataWindow = new TestDataWindow(username, birthYear, weight, isMan, 20, hasSteadyState, vo2);
                                 }
                                 break;
                             }

@@ -146,9 +146,19 @@ namespace ÄstrandTestServer
                         {
                             if (this.currentTests.Keys.Contains(user))
                             {
-                                FileHandler.SaveAstrandTestData(this.currentTests[user]);
-                                this.currentTests.Remove(user);
-                                BroadcastToSpecialists(new Message(Message.ID.END_TEST, Message.State.OK, Encoding.UTF8.GetBytes(user.Username)));
+                                if(message.GetContent().Length != 0)
+                                {
+                                    bool hasSteadyState = (content[0] == 1);
+                                    double vo2 = double.Parse(Encoding.UTF8.GetString(content.GetRange(1, content.Count() - 1).ToArray()));
+
+                                    ÄstrandTest astrandTest = this.currentTests[user];
+                                    astrandTest.HasSteadyState = hasSteadyState;
+                                    astrandTest.VO2 = vo2;
+
+                                    FileHandler.SaveAstrandTestData(astrandTest);
+                                    this.currentTests.Remove(user);
+                                    BroadcastToSpecialists(new Message(Message.ID.END_TEST, Message.State.OK, Encoding.UTF8.GetBytes(user.Username)));
+                                }
                             }
                         }
                         break;

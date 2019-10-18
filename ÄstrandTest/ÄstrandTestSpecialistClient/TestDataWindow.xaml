@@ -17,7 +17,34 @@
                 <Grid.RowDefinitions>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
+                    <RowDefinition></RowDefinition>
                 </Grid.RowDefinitions>
+                <WrapPanel Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Center">
+                    <StackPanel Margin="10,10,10,10">
+                        <Label Content="Naam:" Foreground="White" FontSize="12"></Label>
+                        <Label x:Name="lbl_Username" Foreground="#FF007ACC" FontSize="12"></Label>
+                    </StackPanel>
+                    <StackPanel Margin="10,10,10,10">
+                        <Label Content="Geboortejaar:" Foreground="White" FontSize="12"></Label>
+                        <Label x:Name="lbl_BirthYear" Foreground="#FF007ACC" FontSize="12"></Label>
+                    </StackPanel>
+                    <StackPanel Margin="10,10,10,10">
+                        <Label Content="Gewicht:" Foreground="White" FontSize="12"></Label>
+                        <Label x:Name="lbl_Weight" Foreground="#FF007ACC" FontSize="12"></Label>
+                    </StackPanel>
+                    <StackPanel Margin="10,10,10,10">
+                        <Label Content="Geslacht:" Foreground="White" FontSize="12"></Label>
+                        <Label x:Name="lbl_Gender" Foreground="#FF007ACC" FontSize="12"></Label>
+                    </StackPanel>
+                    <StackPanel Margin="10,10,10,10">
+                        <Label Content="Steady state:" Foreground="White" FontSize="12"></Label>
+                        <Label x:Name="lbl_SteadyState" Foreground="#FF007ACC" FontSize="12"></Label>
+                    </StackPanel>
+                    <StackPanel Margin="10,10,10,10">
+                        <Label Content="VO2:" Foreground="White" FontSize="12"></Label>
+                        <Label x:Name="lbl_VO2" Foreground="#FF007ACC" FontSize="12"></Label>
+                    </StackPanel>
+                </WrapPanel>
             </Grid>
         </uicontrols:Container>
     </Grid>

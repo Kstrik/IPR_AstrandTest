@@ -39,6 +39,10 @@ namespace ÄstrandTestServer.Files
                             astrandTest.Weight = int.Parse(personalData.GetValue("weight").ToString());
                             astrandTest.IsMan = (personalData.GetValue("gender").ToString() == "man") ? true : false;
 
+                            JObject testResultData = historydataJson.GetValue("testresult").ToObject<JObject>();
+                            astrandTest.HasSteadyState = testResultData.GetValue("hassteadystate").ToObject<bool>();
+                            astrandTest.VO2 = double.Parse(testResultData.GetValue("vo2").ToString());
+
                             JArray heartratesJson = historydataJson.GetValue("heartrates").ToObject<JArray>();
                             JArray distancesJson = historydataJson.GetValue("distances").ToObject<JArray>();
                             JArray speedsJson = historydataJson.GetValue("speeds").ToObject<JArray>();
@@ -68,6 +72,7 @@ namespace ÄstrandTestServer.Files
         public static void SaveAstrandTestData(ÄstrandTest testData)
         {
             JObject personalData = new JObject();
+            JObject testResultData = new JObject();
             JArray heartratesJson = new JArray();
             JArray distancesJson = new JArray();
             JArray speedsJson = new JArray();
@@ -77,6 +82,9 @@ namespace ÄstrandTestServer.Files
             personalData.Add("birthyear", testData.BirthYear);
             personalData.Add("weight", testData.Weight);
             personalData.Add("gender", (testData.IsMan) ? "man" : "woman");
+
+            testResultData.Add("hassteadystate", testData.HasSteadyState);
+            testResultData.Add("vo2", testData.VO2);
 
             foreach ((int heartrate, DateTime time) heartrateData in testData.HeartrateValues)
             {
@@ -112,6 +120,7 @@ namespace ÄstrandTestServer.Files
 
             JObject testJson = new JObject();
             testJson.Add("personaldata", personalData);
+            testJson.Add("testresult", testResultData);
             testJson.Add("heartrates", heartratesJson);
             testJson.Add("distances", distancesJson);
             testJson.Add("speeds", speedsJson);

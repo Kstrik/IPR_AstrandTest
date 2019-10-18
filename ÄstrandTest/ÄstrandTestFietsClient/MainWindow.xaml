@@ -37,6 +37,38 @@
                     <Label Content="Rotaties per minuut:" Foreground="White" FontSize="12"></Label>
                     <Label x:Name="lbl_CycleRyhthm" Foreground="White" FontSize="12"></Label>
                 </StackPanel>
+                <StackPanel Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Margin="0,40,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <Label Content="Laatst gemeten test hartslag:" Foreground="White" FontSize="12"></Label>
+                            <Label x:Name="lbl_LastHeartrate" Content="Nog geen meeting gedaan" Foreground="White" FontSize="12"></Label>
+                            <Label Content="Actuale weerstand:" Foreground="White" FontSize="12"></Label>
+                            <Label x:Name="lbl_CurrentResitance" Foreground="White" FontSize="12"></Label>
+                            <Label Content="Bericht:" Foreground="White" FontSize="12"></Label>
+                            <Label x:Name="lbl_Message" Foreground="White" FontSize="12"></Label>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <WrapPanel>
+                                <StackPanel>
+                                    <Label Content="Tijd te gaan:" Foreground="White" FontSize="12"></Label>
+                                    <Label x:Name="lbl_Time" Foreground="White" FontSize="12"></Label>
+                                </StackPanel>
+                                <StackPanel Margin="20,0,0,0">
+                                    <Label Content="Fase:" Foreground="White" FontSize="12"></Label>
+                                    <Label x:Name="lbl_Fase" Foreground="White" FontSize="12"></Label>
+                                </StackPanel>
+                            </WrapPanel>
+                            <Label Content="Steady state behaald:" Foreground="White" FontSize="12"></Label>
+                            <Label x:Name="lbl_SteadyState" Content="NEE" Foreground="Orange" FontSize="12"></Label>
+                            <Label Content="VO2:" Foreground="White" FontSize="12"></Label>
+                            <Label x:Name="lbl_VO2" Content="Nog niet berekend" Foreground="Orange" FontSize="12"></Label>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
             </Grid>
         </uicontrols:Container>
 

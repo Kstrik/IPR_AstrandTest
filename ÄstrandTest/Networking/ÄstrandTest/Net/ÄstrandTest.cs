@@ -16,6 +16,9 @@ namespace ÄstrandTestServer.Net
         public int Weight;
         public bool IsMan;
 
+        public bool HasSteadyState;
+        public double VO2;
+
         public List<(int heartRate, DateTime time)> HeartrateValues;
         public List<(int distance, DateTime time)> DistanceValues;
         public List<(int speed, DateTime time)> SpeedValues;
@@ -32,6 +35,9 @@ namespace ÄstrandTestServer.Net
             this.BirthYear = 0;
             this.Weight = 0;
             this.IsMan = true;
+
+            this.HasSteadyState = false;
+            this.VO2 = 0;
         }
 
         public ÄstrandTest(string username, int birthYear, int weight, bool isMan)
@@ -45,6 +51,9 @@ namespace ÄstrandTestServer.Net
             this.BirthYear = birthYear;
             this.Weight = weight;
             this.IsMan = isMan;
+
+            this.HasSteadyState = false;
+            this.VO2 = 0;
         }
 
         public void Transmit(UserAccount userAccount)
@@ -58,6 +67,9 @@ namespace ÄstrandTestServer.Net
                 startBytes.AddRange(Encoding.UTF8.GetBytes(this.BirthYear.ToString()));
                 startBytes.Add((byte)this.Weight);
                 startBytes.Add((this.IsMan) ? (byte)1 : (byte)0);
+                startBytes.Add((this.HasSteadyState) ? (byte)1 : (byte)0);
+                startBytes.Add((byte)this.VO2.ToString().Length);
+                startBytes.AddRange(Encoding.UTF8.GetBytes(this.VO2.ToString()));
                 userAccount.Connection.Transmit(DataEncryptor.Encrypt(new Message(Message.ID.TEST_DATA_BEGIN, Message.State.OK, startBytes.ToArray()).GetBytes(), DataEncryptor.NetworkKey));
 
                 int maxLength = GetMaxLength();

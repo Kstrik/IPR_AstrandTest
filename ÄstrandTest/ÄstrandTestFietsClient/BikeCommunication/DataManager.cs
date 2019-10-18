@@ -57,7 +57,7 @@ namespace ÄstrandTestFietsClient.BikeCommunication
         private void PushMessage()
         {
             this.receiver?.HandleClientMessage(this.clientMessage);
-            HandleClientMessage(this.clientMessage);
+            //HandleClientMessage(this.clientMessage);
             this.clientMessage = new ClientMessage();
             this.clientMessage.HasHeartbeat = false;
             this.clientMessage.HasPage16 = false;
