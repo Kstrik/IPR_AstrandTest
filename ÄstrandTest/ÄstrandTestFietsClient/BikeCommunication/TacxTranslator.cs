@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Networking.ÄstrandTest.BikeCommunication
+namespace ÄstrandTestFietsClient.BikeCommunication
 {
     class TacxTranslator
     {

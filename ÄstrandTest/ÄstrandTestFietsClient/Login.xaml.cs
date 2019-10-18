@@ -193,6 +193,10 @@ namespace ÄstrandTestFietsClient
                             if (message.GetState() == Message.State.OK)
                             {
                                 lbl_LoginError.Visibility = Visibility.Hidden;
+
+                                MainWindow mainWindow = new MainWindow(this.astrandClient);
+                                mainWindow.Show();
+                                this.Close();
                             }
                             else if (message.GetState() == Message.State.ERROR)
                             {

@@ -38,7 +38,18 @@ namespace ÄstrandTestSpecialistClient
             this.astrandClient = astrandClient;
             this.astrandClient.SetConnector(this);
 
+            this.runningTests = new List<TestData>();
+            this.testNames = new List<string>();
+
             this.astrandClient.Transmit(new Message(Message.ID.GET_TESTS, Message.State.OK, null));
+
+            this.Closed += MainWindow_Closed;
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            this.astrandClient.Disconnect();
+            Environment.Exit(0);
         }
 
         private void HandleAddClient(string username)

@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BLELibrary">
+      <HintPath>.\BLELibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -67,6 +70,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="BikeCommunication\Bike.cs" />
+    <Compile Include="BikeCommunication\ClientMessage.cs" />
+    <Compile Include="BikeCommunication\DataManager.cs" />
+    <Compile Include="BikeCommunication\HeartrateMonitor.cs" />
+    <Compile Include="BikeCommunication\IBikeDataReceiver.cs" />
+    <Compile Include="BikeCommunication\IClientMessageReceiver.cs" />
+    <Compile Include="BikeCommunication\IHeartrateDataReceiver.cs" />
+    <Compile Include="BikeCommunication\RealBike.cs" />
+    <Compile Include="BikeCommunication\Temp\BikeMessage.cs" />
+    <Compile Include="BikeCommunication\Temp\Page.cs" />
+    <Compile Include="BikeCommunication\Temp\Page16.cs" />
+    <Compile Include="BikeCommunication\Temp\Page25.cs" />
+    <Compile Include="BikeCommunication\TacxTranslator.cs" />
     <Compile Include="Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>

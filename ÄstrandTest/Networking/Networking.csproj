@@ -7,7 +7,6 @@
   <ItemGroup>
     <Folder Include="ClientSide\" />
     <Folder Include="ServerSide\" />
-    <Folder Include="ÄstrandTest\BikeCommunication\" />
   </ItemGroup>
 
 </Project>

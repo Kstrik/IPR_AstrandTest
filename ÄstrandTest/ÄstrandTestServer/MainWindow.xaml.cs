@@ -195,7 +195,7 @@ namespace ÄstrandTestServer
 
         private void HandleClientLogin(string username, string password, UserAccount user)
         {
-            if (Authorizer.CheckAuthorization(username, password, DataEncryptor.FileKey))
+            if (Authorizer.CheckAuthorization(username, password, false, DataEncryptor.FileKey))
             {
                 user.Username = username;
                 user.IsAuthorized = true;
@@ -208,7 +208,7 @@ namespace ÄstrandTestServer
 
         private void HandleSpecialistLogin(string username, string password, UserAccount user)
         {
-            if (Authorizer.CheckAuthorization(username, password, DataEncryptor.FileKey))
+            if (Authorizer.CheckAuthorization(username, password, true, DataEncryptor.FileKey))
             {
                 user.Username = username;
                 user.IsAuthorized = true;

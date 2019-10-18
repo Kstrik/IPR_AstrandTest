@@ -80,7 +80,7 @@ namespace ÄstrandTestSpecialistClient
                 btn_ShowRegister.IsEnabled = false;
 
                 string usernameAndPasword = HashUtil.HashSha256(txb_LoginPassword.Password) + txb_LoginUsername.Text;
-                this.astrandClient.Transmit(new Message(Message.ID.CLIENT_LOGIN, Message.State.NONE, Encoding.UTF8.GetBytes(usernameAndPasword)));
+                this.astrandClient.Transmit(new Message(Message.ID.SPECIALIST_LOGIN, Message.State.NONE, Encoding.UTF8.GetBytes(usernameAndPasword)));
             }
             else
             {
@@ -99,7 +99,7 @@ namespace ÄstrandTestSpecialistClient
                     btn_Back.IsEnabled = false;
 
                     string usernameAndPasword = HashUtil.HashSha256(txb_RegisterPassword.Password) + txb_RegisterUsername.Text;
-                    this.astrandClient.Transmit(new Message(Message.ID.CLIENT_REGISTER, Message.State.NONE, Encoding.UTF8.GetBytes(usernameAndPasword)));
+                    this.astrandClient.Transmit(new Message(Message.ID.SPECIALIST_REGISTER, Message.State.NONE, Encoding.UTF8.GetBytes(usernameAndPasword)));
                 }
                 else
                 {
@@ -182,6 +182,10 @@ namespace ÄstrandTestSpecialistClient
                             if (message.GetState() == Message.State.OK)
                             {
                                 lbl_LoginError.Visibility = Visibility.Hidden;
+
+                                MainWindow mainWindow = new MainWindow(this.astrandClient);
+                                mainWindow.Show();
+                                this.Close();
                             }
                             else if (message.GetState() == Message.State.ERROR)
                             {

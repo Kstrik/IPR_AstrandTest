@@ -15,7 +15,7 @@ namespace ÄstrandTestServer.Net
         private static string appFolderPath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
         private static string filesFolderPath = System.IO.Path.Combine(Directory.GetParent(appFolderPath).Parent.FullName, "Files/Users");
 
-        public static bool CheckAuthorization(string username, string password, string cryptoKey)
+        public static bool CheckAuthorization(string username, string password, bool isSpecialist, string cryptoKey)
         {
             if (File.Exists(filesFolderPath + @"/Authentifications.json"))
             {
@@ -34,7 +34,23 @@ namespace ÄstrandTestServer.Net
                         string passwordAuth = authentification.GetValue("password").ToString();
 
                         if (username == usernameAuth && password == passwordAuth)
+                        {
+                            JToken birthYear = "";
+                            authentification.TryGetValue("birthyear", out birthYear);
+
+                            if (!isSpecialist)
+                            {
+                                if(birthYear == null)
+                                    return false;
+                            }
+                            else
+                            {
+                                if (birthYear != null)
+                                    return false;
+                            }
+
                             return true;
+                        }
                     }
                 }
             }
@@ -43,7 +59,7 @@ namespace ÄstrandTestServer.Net
 
         public static bool AddNewSpecialistAuthorization(string username, string password, string cryptoKey)
         {
-            if (!Authorizer.CheckAuthorization(username, password, cryptoKey))
+            if (!Authorizer.CheckAuthorization(username, password, true, cryptoKey))
             {
                 if (File.Exists(filesFolderPath + @"/Authentifications.json"))
                 {
@@ -75,13 +91,19 @@ namespace ÄstrandTestServer.Net
 
                     return true;
                 }
+                else
+                {
+                    File.WriteAllText(filesFolderPath + @"/Authentifications.json", "");
+                    AddNewSpecialistAuthorization(username, password, cryptoKey);
+                    return true;
+                }
             }
             return false;
         }
 
         public static bool AddNewClientAuthorization(string username, string password, int birthYear, int weight, bool isMan, string cryptoKey)
         {
-            if (!Authorizer.CheckAuthorization(username, password, cryptoKey))
+            if (!Authorizer.CheckAuthorization(username, password, false, cryptoKey))
             {
                 if (File.Exists(filesFolderPath + @"/Authentifications.json"))
                 {
