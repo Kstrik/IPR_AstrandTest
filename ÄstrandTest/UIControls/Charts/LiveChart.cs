@@ -246,7 +246,7 @@ namespace UIControls.Charts
             {
                 TextBlock headerChart = new TextBlock();
                 headerChart.Text = this.chartHeader;
-                headerChart.FontSize = 12;
+                headerChart.FontSize = 14;
                 headerChart.Margin = new System.Windows.Thickness(((this.width / 2) + (this.spacing / 2)) - (headerChart.ActualWidth / 2), (this.spacing / 2) - (headerChart.FontSize / 2), 0, 0);
                 headerChart.Background = Brushes.Transparent;
                 headerChart.Foreground = this.colorTheme.LineColor;
@@ -258,7 +258,7 @@ namespace UIControls.Charts
             {
                 TextBlock headerX = new TextBlock();
                 headerX.Text = this.xHeader;
-                headerX.FontSize = 12;
+                headerX.FontSize = 14;
                 headerX.Margin = new System.Windows.Thickness(((this.width / 2) + (this.spacing / 2)) - (headerX.ActualWidth / 2), (this.height + (this.spacing * 2)) - ((this.spacing / 2) + (headerX.FontSize / 2)), 0, 0);
                 headerX.Background = Brushes.Transparent;
                 headerX.Foreground = this.colorTheme.LineColor;
@@ -270,7 +270,7 @@ namespace UIControls.Charts
             {
                 TextBlock headerY = new TextBlock();
                 headerY.Text = this.yHeader;
-                headerY.FontSize = 12;
+                headerY.FontSize = 14;
                 headerY.LayoutTransform = new RotateTransform(-90);
                 headerY.Margin = new System.Windows.Thickness((this.spacing / 2) - (headerY.FontSize / 2), (this.height / 2) + (this.spacing / 2), 0, 0);
                 headerY.Background = Brushes.Transparent;

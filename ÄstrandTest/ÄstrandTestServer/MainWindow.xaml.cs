@@ -156,9 +156,9 @@ namespace ÄstrandTestServer
                                     astrandTest.VO2 = vo2;
 
                                     FileHandler.SaveAstrandTestData(astrandTest);
-                                    this.currentTests.Remove(user);
-                                    BroadcastToSpecialists(new Message(Message.ID.END_TEST, Message.State.OK, Encoding.UTF8.GetBytes(user.Username)));
                                 }
+                                this.currentTests.Remove(user);
+                                BroadcastToSpecialists(new Message(Message.ID.END_TEST, Message.State.OK, Encoding.UTF8.GetBytes(user.Username)));
                             }
                         }
                         break;

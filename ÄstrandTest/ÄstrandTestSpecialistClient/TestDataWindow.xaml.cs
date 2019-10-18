@@ -54,10 +54,10 @@ namespace ÄstrandTestSpecialistClient
             this.maxIntervals = maxIntervals;
             con_TestData.Header = $"Cliënt data [{username}]";
 
-            this.heartrateChart = new LiveChartControl("Hartslag", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, false, true);
-            this.distanceChart = new LiveChartControl("Afstand", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, false, true);
-            this.speedChart = new LiveChartControl("Snelheid", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, false, true);
-            this.cycleRhythmChart = new LiveChartControl("Rotaties per minuut", "", "", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, false, true);
+            this.heartrateChart = new LiveChartControl("Hartslag", "", "sl/pm", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, true, true);
+            this.distanceChart = new LiveChartControl("Afstand", "", "meters", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, true, true);
+            this.speedChart = new LiveChartControl("Snelheid", "", "m/s", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, true, true);
+            this.cycleRhythmChart = new LiveChartControl("Rotaties per minuut", "", "rpm", 40, 400, 200, this.maxIntervals, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, true, true);
 
             grd_Grid.Children.Add(this.heartrateChart);
             grd_Grid.Children.Add(this.distanceChart);
@@ -78,7 +78,10 @@ namespace ÄstrandTestSpecialistClient
             lbl_Weight.Content = weight;
             lbl_Gender.Content = (isMan) ? "Man" : "Vrouw";
             lbl_SteadyState.Content = (hasSteadyState) ? "JA" : "NEE";
-            lbl_VO2.Content = $"{vo2} {((hasSteadyState) ? "" : "Er was geen steady state, vo2 meeting is niet betrouwbaar!")}";
+            lbl_VO2.Content = vo2;
+
+            if (!hasSteadyState)
+                lbl_SteadyStateNotification.Content = "Er was geen steady state, vo2 meeting is niet betrouwbaar!";
         }
 
         public void ProcessHistoryData()

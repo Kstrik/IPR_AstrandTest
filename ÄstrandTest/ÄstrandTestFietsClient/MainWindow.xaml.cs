@@ -132,7 +132,7 @@ namespace ÄstrandTestFietsClient
                     clientMessage.HasHeartbeat = true;
                     clientMessage.HasPage16 = true;
                     clientMessage.HasPage25 = true;
-                    clientMessage.Heartbeat = (byte)90;
+                    clientMessage.Heartbeat = (byte)random.Next(10, 100);
                     clientMessage.Distance = (byte)random.Next(10, 100);
                     clientMessage.Speed = (byte)random.Next(10, 100);
                     clientMessage.Cadence = (byte)random.Next(10, 100);
@@ -220,6 +220,10 @@ namespace ÄstrandTestFietsClient
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
+                btn_StartStopTest.Content = "Start test";
+                if (this.testDataThread != null)
+                    this.testDataThread.Abort();
+
                 lbl_VO2.Content = Math.Round(vo2, 2).ToString() + ((hasSteadyState) ? "" : " (Steady state kon niet worden berekend!)");
                 lbl_VO2.Foreground = Brushes.Green;
             }));

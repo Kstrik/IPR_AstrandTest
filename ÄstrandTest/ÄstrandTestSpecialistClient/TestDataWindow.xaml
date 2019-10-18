@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ÄstrandTestSpecialistClient"
         xmlns:uicontrols="clr-namespace:UIControls;assembly=UIControls"
         mc:Ignorable="d"
-        Title="TestDataWindow" Height="450" Width="800" Background="#FF1A1A1A">
+        Title="TestDataWindow" Height="800" Width="1010" Background="#FF1A1A1A">
     <Grid>
         <uicontrols:Container x:Name="con_TestData" Header="Test data" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="1" Background="#FF1E1E1E" Foreground="#FF333337" HeaderForeground="White" Margin="2.5,2.5,5,5">
             <Grid x:Name="grd_Grid">
@@ -15,6 +15,7 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
                     <RowDefinition></RowDefinition>
@@ -45,6 +46,7 @@
                         <Label x:Name="lbl_VO2" Foreground="#FF007ACC" FontSize="12"></Label>
                     </StackPanel>
                 </WrapPanel>
+                <Label x:Name="lbl_SteadyStateNotification" Grid.Row="3" Grid.ColumnSpan="2" Foreground="Red" FontSize="12" HorizontalAlignment="Center"></Label>
             </Grid>
         </uicontrols:Container>
     </Grid>

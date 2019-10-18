@@ -22,7 +22,7 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <uicontrols:Container x:Name="con_RunningTests" Grid.RowSpan="2" Header="Lopende testem" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
+        <uicontrols:Container x:Name="con_RunningTests" Grid.RowSpan="2" Header="Lopende testen" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
 
         </uicontrols:Container>
 
