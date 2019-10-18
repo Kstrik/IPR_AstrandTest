@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ÄstrandTestFietsClient.BikeCommunication
@@ -14,12 +15,12 @@ namespace ÄstrandTestFietsClient.BikeCommunication
         public HeartrateMonitor(IHeartrateDataReceiver heartrateDataReceiver)
         {
             this.heartrateDataReceiver = heartrateDataReceiver;
-            //Thread HRMThread = new Thread(StartHeartrateMonitor);
-            //HRMThread.Start();
-            Task.Run(() => StartHeartrateMonitor());
+            Thread HRMThread = new Thread(StartHeartrateMonitor);
+            HRMThread.Start();
+            //Task.Run(() => StartHeartrateMonitor());
         }
 
-        private async Task StartHeartrateMonitor()
+        private async void StartHeartrateMonitor()
         {
             Console.WriteLine("Connecting to HeartrateMonitor");
             int errorCode = 0;

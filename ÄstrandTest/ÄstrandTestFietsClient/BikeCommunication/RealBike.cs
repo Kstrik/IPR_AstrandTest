@@ -20,10 +20,9 @@ namespace ÄstrandTestFietsClient.BikeCommunication
             //ThreadStart bikeStart = new ThreadStart(ConnectToBike);
             //Thread bikeThread = new Thread(bikeStart);
             //bikeThread.Start();
-            Task.Run(() => ConnectToBike());
         }
 
-        private async Task ConnectToBike()
+        public async Task<bool> ConnectToBike()
         {
             Console.WriteLine("Starting connection to bike");
             int errorCode = 0;
@@ -39,6 +38,7 @@ namespace ÄstrandTestFietsClient.BikeCommunication
             // Subscribe
             bleBike.SubscriptionValueChanged += BleBike_SubscriptionValueChanged;
             errorCode = await this.bleBike.SubscribeToCharacteristic("6e40fec2-b5a3-f393-e0a9-e50e24dcca9e");
+            return (errorCode == 0);
         }
 
         private void BleBike_SubscriptionValueChanged(object sender, BLESubscriptionValueChangedEventArgs e)

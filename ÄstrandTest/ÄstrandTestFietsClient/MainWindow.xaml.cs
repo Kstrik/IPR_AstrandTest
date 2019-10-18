@@ -35,6 +35,8 @@ namespace ÄstrandTestFietsClient
 
         private Thread testDataThread;
 
+        private AvansAstrandTest astrandTest;
+
         public MainWindow(ÄstrandClient astrandClient)
         {
             InitializeComponent();
@@ -48,6 +50,9 @@ namespace ÄstrandTestFietsClient
             Grid.SetColumn(this.liveChartControl, 1);
             grd_DataGrid.Children.Add(this.liveChartControl);
 
+            btn_StopSendTestData.IsEnabled = false;
+            btn_StopSendTestData.Foreground = Brushes.Gray;
+
             this.Closed += MainWindow_Closed;
         }
 
@@ -57,26 +62,27 @@ namespace ÄstrandTestFietsClient
             Environment.Exit(0);
         }
 
-        private bool ConnectToBike()
+        private async void ConnectToBike_Click(object sender, RoutedEventArgs e)
         {
             if (!String.IsNullOrEmpty(txf_BikeId.Value))
             {
                 this.bike = new RealBike(txf_BikeId.Value, this.dataManager);
-                return true;
+                if (await this.bike.ConnectToBike())
+                {
+                    txf_BikeId.IsEnabled = false;
+                    btn_ConnectToBike.IsEnabled = false;
+                    btn_ConnectToBike.Foreground = Brushes.Gray;
+                }
+                else
+                {
+                    txf_BikeId.IsEnabled = true;
+                    btn_ConnectToBike.IsEnabled = true;
+                    btn_ConnectToBike.Foreground = Brushes.White;
+                    MessageBox.Show("Could not connect to bike!");
+                }
             }
-
-            MessageBox.Show("FietsId veld mag niet leeg zijn!");
-            return false;
-        }
-
-        private void ConnectToBike_Click(object sender, RoutedEventArgs e)
-        {
-            if (ConnectToBike())
-            {
-                txf_BikeId.IsEnabled = false;
-                btn_ConnectToBike.IsEnabled = false;
-                btn_ConnectToBike.Foreground = Brushes.Gray;
-            }
+            else
+                MessageBox.Show("FietsId veld mag niet leeg zijn!");
         }
 
         private void SendTestData_Click(object sender, RoutedEventArgs e)
@@ -91,12 +97,15 @@ namespace ÄstrandTestFietsClient
 
         private void StopSendTestData_Click(object sender, RoutedEventArgs e)
         {
-            this.testDataThread.Abort();
-            this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, null));
-            btn_SendTestData.IsEnabled = true;
-            btn_SendTestData.Foreground = Brushes.White;
-            btn_StopSendTestData.IsEnabled = false;
-            btn_StopSendTestData.Foreground = Brushes.Gray;
+            if(this.testDataThread != null)
+            {
+                this.testDataThread.Abort();
+                this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, null));
+                btn_SendTestData.IsEnabled = true;
+                btn_SendTestData.Foreground = Brushes.White;
+                btn_StopSendTestData.IsEnabled = false;
+                btn_StopSendTestData.Foreground = Brushes.Gray;
+            }
         }
 
         public void OnMessageReceived(Message message)
@@ -161,17 +170,26 @@ namespace ÄstrandTestFietsClient
                 {
                     lbl_Heartrate.Content = clientMessage.Heartbeat;
                     this.liveChartControl.GetLiveChart().Update(clientMessage.Heartbeat);
+                    this.astrandTest?.OnHeartrateReceived(clientMessage.Heartbeat);
                 }
                 if (clientMessage.HasPage16)
                 {
                     lbl_Distance.Content = clientMessage.Distance;
                     lbl_Speed.Content = clientMessage.Speed;
+                    this.astrandTest?.OnDistanceRecieved(clientMessage.Distance);
                 }
                 if (clientMessage.HasPage25)
                 {
                     lbl_CycleRyhthm.Content = clientMessage.Cadence;
+                    this.astrandTest?.OnCycleRyhthmReceived(clientMessage.Cadence);
                 }
             }));
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.astrandTest = new AvansAstrandTest(this.bike, true, 10);
+            this.astrandTest.Start();
         }
     }
 }

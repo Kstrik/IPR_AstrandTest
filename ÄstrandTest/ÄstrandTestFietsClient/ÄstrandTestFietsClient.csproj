@@ -70,6 +70,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AvansAstrandTest.cs" />
     <Compile Include="BikeCommunication\Bike.cs" />
     <Compile Include="BikeCommunication\ClientMessage.cs" />
     <Compile Include="BikeCommunication\DataManager.cs" />
