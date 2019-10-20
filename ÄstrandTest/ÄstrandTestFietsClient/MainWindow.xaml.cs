@@ -37,6 +37,12 @@ namespace ÄstrandTestFietsClient
 
         private AvansAstrandTest astrandTest;
 
+        private bool bikeIsConnected;
+        private bool testInProgress;
+
+        private int testHeartrate = 60;
+        private int testDistance = 0;
+
         public MainWindow(ÄstrandClient astrandClient)
         {
             InitializeComponent();
@@ -46,14 +52,23 @@ namespace ÄstrandTestFietsClient
 
             this.dataManager = new DataManager(this.astrandClient, this);
 
-            this.liveChartControl = new LiveChartControl("Hartslag", "", "", 40, 250, 180, 20, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, false, true);
+            this.liveChartControl = new LiveChartControl("Hartslag", "", "sl/pm", 40, 250, 180, 20, LiveChart.BlueGreenDarkTheme, true, true, true, true, false, true, true);
             Grid.SetColumn(this.liveChartControl, 1);
             grd_DataGrid.Children.Add(this.liveChartControl);
 
-            btn_StopSendTestData.IsEnabled = false;
-            btn_StopSendTestData.Foreground = Brushes.Gray;
+            this.bikeIsConnected = false;
+            this.testInProgress = false;
 
             this.Closed += MainWindow_Closed;
+            this.KeyUp += MainWindow_KeyUp;
+        }
+
+        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Up)
+                this.testHeartrate += 1;
+            if(e.Key == Key.Down)
+                this.testHeartrate -= 1;
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
@@ -72,6 +87,8 @@ namespace ÄstrandTestFietsClient
                     txf_BikeId.IsEnabled = false;
                     btn_ConnectToBike.IsEnabled = false;
                     btn_ConnectToBike.Foreground = Brushes.Gray;
+
+                    this.bikeIsConnected = true;
                 }
                 else
                 {
@@ -83,29 +100,6 @@ namespace ÄstrandTestFietsClient
             }
             else
                 MessageBox.Show("FietsId veld mag niet leeg zijn!");
-        }
-
-        private void SendTestData_Click(object sender, RoutedEventArgs e)
-        {
-            //this.astrandClient.Transmit(new Message(Message.ID.START_TEST, Message.State.NONE, null));
-            SendTestBikeData();
-            btn_SendTestData.IsEnabled = false;
-            btn_SendTestData.Foreground = Brushes.Gray;
-            btn_StopSendTestData.IsEnabled = true;
-            btn_StopSendTestData.Foreground = Brushes.White;
-        }
-
-        private void StopSendTestData_Click(object sender, RoutedEventArgs e)
-        {
-            if(this.testDataThread != null)
-            {
-                this.testDataThread.Abort();
-                //this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, null));
-                btn_SendTestData.IsEnabled = true;
-                btn_SendTestData.Foreground = Brushes.White;
-                btn_StopSendTestData.IsEnabled = false;
-                btn_StopSendTestData.Foreground = Brushes.Gray;
-            }
         }
 
         public void OnMessageReceived(Message message)
@@ -127,28 +121,17 @@ namespace ÄstrandTestFietsClient
                 while (true)
                 {
                     Thread.Sleep(1000);
+                    this.testDistance += 2;
 
                     ClientMessage clientMessage = new ClientMessage();
                     clientMessage.HasHeartbeat = true;
                     clientMessage.HasPage16 = true;
                     clientMessage.HasPage25 = true;
-                    clientMessage.Heartbeat = (byte)random.Next(10, 100);
-                    clientMessage.Distance = (byte)random.Next(10, 100);
-                    clientMessage.Speed = (byte)random.Next(10, 100);
-                    clientMessage.Cadence = (byte)random.Next(10, 100);
+                    clientMessage.Heartbeat = (byte)this.testHeartrate;
+                    clientMessage.Distance = this.testDistance;
+                    clientMessage.Speed = (byte)random.Next(2, 4);
+                    clientMessage.Cadence = (byte)random.Next(40, 70);
                     HandleClientMessage(clientMessage);
-
-                    //List<byte> bytes = new List<byte>();
-                    //bytes.Add((byte)Message.ValueId.HEARTRATE);
-                    //bytes.Add(clientMessage.Heartbeat);
-                    //bytes.Add((byte)Message.ValueId.DISTANCE);
-                    //bytes.Add(clientMessage.Distance);
-                    //bytes.Add((byte)Message.ValueId.SPEED);
-                    //bytes.Add(clientMessage.Speed);
-                    //bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
-                    //bytes.Add(clientMessage.Cadence);
-
-                    //this.astrandClient.Transmit(new Message(Message.ID.BIKEDATA, Message.State.NONE, bytes.ToArray()));
                 }
             });
             this.testDataThread.Start();
@@ -156,56 +139,89 @@ namespace ÄstrandTestFietsClient
 
         public void HandleClientMessage(ClientMessage clientMessage)
         {
-            if(this.astrandTest != null && this.astrandTest.IsRunning)
-                this.astrandClient.Transmit(new Message(Message.ID.BIKEDATA, Message.State.NONE, clientMessage.GetData()));
-
-            Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
+            if(this.testInProgress)
             {
-                if (clientMessage.HasHeartbeat)
+                if (this.astrandTest != null && this.astrandTest.IsRunning)
+                    this.astrandClient.Transmit(new Message(Message.ID.BIKEDATA, Message.State.NONE, clientMessage.GetData()));
+
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    lbl_Heartrate.Content = clientMessage.Heartbeat;
-                    this.liveChartControl.GetLiveChart().Update(clientMessage.Heartbeat);
-                    this.astrandTest?.OnHeartrateReceived(clientMessage.Heartbeat);
-                }
-                if (clientMessage.HasPage16)
-                {
-                    lbl_Distance.Content = clientMessage.Distance;
-                    lbl_Speed.Content = clientMessage.Speed;
-                    this.astrandTest?.OnDistanceRecieved(clientMessage.Distance);
-                }
-                if (clientMessage.HasPage25)
-                {
-                    lbl_CycleRyhthm.Content = clientMessage.Cadence;
-                    this.astrandTest?.OnCycleRyhthmReceived(clientMessage.Cadence);
-                }
-            }));
+                    if (clientMessage.HasHeartbeat)
+                    {
+                        lbl_Heartrate.Content = clientMessage.Heartbeat;
+                        this.liveChartControl.GetLiveChart().Update(clientMessage.Heartbeat);
+                        this.astrandTest?.OnHeartrateReceived(clientMessage.Heartbeat);
+                    }
+                    if (clientMessage.HasPage16)
+                    {
+                        lbl_Distance.Content = clientMessage.Distance;
+                        lbl_Speed.Content = clientMessage.Speed;
+                        this.astrandTest?.OnDistanceRecieved(clientMessage.Distance);
+                    }
+                    if (clientMessage.HasPage25)
+                    {
+                        lbl_CycleRyhthm.Content = clientMessage.Cadence;
+                        this.astrandTest?.OnCycleRyhthmReceived(clientMessage.Cadence);
+                    }
+                }));
+            }
         }
 
         private void StartStopTest_Click(object sender, RoutedEventArgs e)
         {
             if((sender as Button).Content.ToString() == "Start test")
             {
-                (sender as Button).Content = "Stop test";
+                if(!this.bikeIsConnected && cbx_AllowTestData.IsChecked == true)
+                    SendTestBikeData();
 
-                this.liveChartControl.GetLiveChart().Clear();
-                lbl_LastHeartrate.Content = "Nog geen meeting gedaan";
-                lbl_Message.Content = "";
-                lbl_SteadyState.Content = "NEE";
-                lbl_SteadyState.Foreground = Brushes.Orange;
-                lbl_VO2.Content = "Nog niet berekend";
-                lbl_VO2.Foreground = Brushes.Orange;
+                if(this.bikeIsConnected || cbx_AllowTestData.IsChecked == true)
+                {
+                    if(!this.bikeIsConnected)
+                    {
+                        txf_BikeId.IsEnabled = false;
+                        btn_ConnectToBike.IsEnabled = false;
+                    }
 
-                SendTestBikeData();
+                    lbl_NoConnection.Visibility = Visibility.Collapsed;
 
-                this.astrandTest = new AvansAstrandTest(this.bike, UserLogin.isMan, DateTime.Now.Year - UserLogin.BirthYear, this);
-                this.astrandTest.Start();
+                    (sender as Button).Content = "Stop test";
+
+                    this.liveChartControl.GetLiveChart().Clear();
+                    lbl_LastHeartrate.Content = "Nog geen meeting gedaan";
+                    lbl_Message.Content = "";
+                    lbl_SteadyState.Content = "NEE";
+                    lbl_SteadyState.Foreground = Brushes.Orange;
+                    lbl_VO2.Content = "Nog niet berekend";
+                    lbl_VO2.Foreground = Brushes.Orange;
+
+                    this.testInProgress = true;
+
+                    this.astrandTest = new AvansAstrandTest(this.bike, UserLogin.isMan, DateTime.Now.Year - UserLogin.BirthYear, this);
+                    this.astrandTest.Start();
+                }
+                else
+                {
+                    lbl_NoConnection.Visibility = Visibility.Visible;
+                }
             }
             else
             {
+                if (!this.bikeIsConnected)
+                {
+                    txf_BikeId.IsEnabled = true;
+                    btn_ConnectToBike.IsEnabled = true;
+                }
+
+                lbl_NoConnection.Visibility = Visibility.Visible;
+
                 (sender as Button).Content = "Start test";
 
                 if (this.testDataThread != null)
                     this.testDataThread.Abort();
+
+                this.testInProgress = false;
+                this.testHeartrate = 60;
+                this.testDistance = 0;
 
                 this.astrandTest.Stop();
             }
@@ -261,7 +277,7 @@ namespace ÄstrandTestFietsClient
         {
             Application.Current.Dispatcher.Invoke(DispatcherPriority.Background, new Action(() =>
             {
-                lbl_CurrentResitance.Content = resistance;
+                lbl_CurrentResitance.Content = resistance + "%";
             }));
         }
 

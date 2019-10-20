@@ -73,12 +73,12 @@
         </uicontrols:Container>
 
         <uicontrols:Container x:Name="con_Settings" Grid.Column="2" Grid.ColumnSpan="1" Header="Instellingen" Background="#FF1E1E1E" Foreground="#FF2D2D30" HeaderForeground="White" Margin="2,2,2,2" ScrollbarVisibility="Hidden">
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
+            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
                 <fields:TextField x:Name="txf_BikeId" Value="" Header="Fiets ID:" HeaderForeground="White" ValueForeground="White" ValueBackground="#FF2D2D30" ValueBorderBrush="Transparent" FontSize="12" HorizontalAlignment="Stretch"></fields:TextField>
                 <Button x:Name="btn_ConnectToBike" Content="Verbind met fiets" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="ConnectToBike_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
-                <Button x:Name="btn_SendTestData" Content="Send testdata" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="SendTestData_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
-                <Button x:Name="btn_StopSendTestData" Content="Stop testdata" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="StopSendTestData_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5"/>
                 <Button x:Name="btn_StartStopTest" Content="Start test" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" Click="StartStopTest_Click" Background="#FF3F3F46" Foreground="White" Padding="5,5,5,5" ></Button>
+                <CheckBox x:Name="cbx_AllowTestData" Content="Sta testdata toe" Foreground="White" Margin="5,5,5,5"></CheckBox>
+                <Label x:Name="lbl_NoConnection" Content="Er is geen connectie met de fiets" Foreground="Red" Margin="5,5,5,5" Visibility="Collapsed"></Label>
             </StackPanel>
         </uicontrols:Container>
     </Grid>

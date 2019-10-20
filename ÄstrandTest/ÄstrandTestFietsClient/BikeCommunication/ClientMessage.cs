@@ -9,11 +9,11 @@ namespace ÄstrandTestFietsClient.BikeCommunication
 {
     public struct ClientMessage
     {
-        public byte Distance { get; set; }
-        public byte Cadence { get; set; }
+        public int Distance { get; set; }
+        public int Cadence { get; set; }
 
-        public byte Speed { get; set; }
-        public byte Heartbeat { get; set; }
+        public int Speed { get; set; }
+        public int Heartbeat { get; set; }
 
         public byte CheckBits { get; set; }
 
@@ -27,19 +27,21 @@ namespace ÄstrandTestFietsClient.BikeCommunication
             if (HasHeartbeat)
             {
                 bytes.Add((byte)Message.ValueId.HEARTRATE);
-                bytes.Add(Heartbeat);
+                bytes.Add((byte)Heartbeat);
             }
             if (HasPage16)
             {
                 bytes.Add((byte)Message.ValueId.SPEED);
-                bytes.Add(Speed);
+                bytes.Add((byte)Speed);
                 bytes.Add((byte)Message.ValueId.DISTANCE);
-                bytes.Add(Distance);
+                string distance = this.Distance.ToString();
+                bytes.Add((byte)distance.Length);
+                bytes.AddRange(Encoding.UTF8.GetBytes(distance));
             }
             if (HasPage25)
             {
                 bytes.Add((byte)Message.ValueId.CYCLE_RHYTHM);
-                bytes.Add(Cadence);
+                bytes.Add((byte)Cadence);
             }
             return bytes.ToArray();
         }

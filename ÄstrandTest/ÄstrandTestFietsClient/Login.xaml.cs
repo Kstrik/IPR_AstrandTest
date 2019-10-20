@@ -94,7 +94,7 @@ namespace ÄstrandTestFietsClient
         private void Register_Click(object sender, RoutedEventArgs e)
         {
             if (!String.IsNullOrEmpty(txb_RegisterUsername.Text) && !String.IsNullOrEmpty(txb_RegisterPassword.Password) && !String.IsNullOrEmpty(txb_RegisterConfirmPassword.Password)
-                && !String.IsNullOrEmpty(txb_BirthYear.Text) && !String.IsNullOrEmpty(txb_Weight.Text))
+                && !String.IsNullOrEmpty(txb_BirthYear.Text) && !String.IsNullOrEmpty(txb_Weight.Text) && cmb_Gender.SelectedItem != null)
             {
                 if (txb_RegisterPassword.Password == txb_RegisterConfirmPassword.Password)
                 {

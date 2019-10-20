@@ -264,31 +264,69 @@ namespace ÄstrandTestServer
 
             List<byte> bytes = new List<byte>(bikeData);
 
-            for (int i = 0; i < bytes.Count; i += 2)
+            //for (int i = 0; i < bytes.Count; i += 2)
+            //{
+            //    Message.ValueId valueType = (Message.ValueId)bytes[i];
+            //    int value = bytes[i + 1];
+            //    DateTime dateTime = DateTime.Now;
+
+            //    switch (valueType)
+            //    {
+            //        case Message.ValueId.HEARTRATE:
+            //            {
+            //                astrandTest.HeartrateValues.Add((heartRate: value, time: dateTime));
+            //                break;
+            //            }
+            //        case Message.ValueId.DISTANCE:
+            //            {
+            //                astrandTest.DistanceValues.Add((distance: value, time: dateTime));
+            //                break;
+            //            }
+            //        case Message.ValueId.SPEED:
+            //            {
+            //                astrandTest.SpeedValues.Add((speed: value, time: dateTime));
+            //                break;
+            //            }
+            //        case Message.ValueId.CYCLE_RHYTHM:
+            //            {
+            //                astrandTest.CycleRhythmValues.Add((cycleRhythm: value, time: dateTime));
+            //                break;
+            //            }
+            //    }
+            //}
+            int skip = 2;
+            for (int i = 0; i < bytes.Count; i += skip)
             {
                 Message.ValueId valueType = (Message.ValueId)bytes[i];
-                int value = bytes[i + 1];
                 DateTime dateTime = DateTime.Now;
 
                 switch (valueType)
                 {
                     case Message.ValueId.HEARTRATE:
                         {
+                            skip = 2;
+                            int value = bytes[i + 1];
                             astrandTest.HeartrateValues.Add((heartRate: value, time: dateTime));
                             break;
                         }
                     case Message.ValueId.DISTANCE:
                         {
+                            skip = 2 + bytes[i + 1];
+                            int value = int.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, bytes[i + 1]).ToArray()));
                             astrandTest.DistanceValues.Add((distance: value, time: dateTime));
                             break;
                         }
                     case Message.ValueId.SPEED:
                         {
+                            skip = 2;
+                            int value = bytes[i + 1];
                             astrandTest.SpeedValues.Add((speed: value, time: dateTime));
                             break;
                         }
                     case Message.ValueId.CYCLE_RHYTHM:
                         {
+                            skip = 2;
+                            int value = bytes[i + 1];
                             astrandTest.CycleRhythmValues.Add((cycleRhythm: value, time: dateTime));
                             break;
                         }

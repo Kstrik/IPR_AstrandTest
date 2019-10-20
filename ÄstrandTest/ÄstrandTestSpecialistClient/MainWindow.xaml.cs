@@ -208,6 +208,7 @@ namespace ÄstrandTestSpecialistClient
 
                                     if (!this.testNames.Contains(filename))
                                     {
+                                        filename = filename.Replace("#", ":");
                                         this.testNames.Add(filename);
                                         cmf_TestNames.Value = this.testNames.ToArray();
                                     }
@@ -233,31 +234,73 @@ namespace ÄstrandTestSpecialistClient
         {
             if (this.testDataWindow != null)
             {
-                for (int i = 0; i < bytes.Count(); i += 21)
-                {
-                    int value = bytes[i + 1];
-                    DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+                //for (int i = 0; i < bytes.Count(); i += 21)
+                //{
+                //    int value = bytes[i + 1];
+                //    DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
 
-                    switch ((Message.ValueId)bytes[i])
+                //    switch ((Message.ValueId)bytes[i])
+                //    {
+                //        case Message.ValueId.HEARTRATE:
+                //            {
+                //                this.testDataWindow.AddHeartRate((value, time));
+                //                break;
+                //            }
+                //        case Message.ValueId.DISTANCE:
+                //            {
+                //                this.testDataWindow.AddDistance((value, time));
+                //                break;
+                //            }
+                //        case Message.ValueId.SPEED:
+                //            {
+                //                this.testDataWindow.AddSpeed((value, time));
+                //                break;
+                //            }
+                //        case Message.ValueId.CYCLE_RHYTHM:
+                //            {
+                //                this.testDataWindow.AddCycleRyhthm((value, time));
+                //                break;
+                //            }
+                //    }
+                //}
+
+                int skip = 21;
+                for (int i = 0; i < bytes.Count; i += skip)
+                {
+                    Message.ValueId valueType = (Message.ValueId)bytes[i];
+
+                    switch (valueType)
                     {
                         case Message.ValueId.HEARTRATE:
                             {
-                                this.testDataWindow.AddHeartRate((value, time));
+                                skip = 21;
+                                int value = bytes[i + 1];
+                                DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+                                this.testDataWindow.AddHeartRate((heartRate: value, time: time));
                                 break;
                             }
                         case Message.ValueId.DISTANCE:
                             {
-                                this.testDataWindow.AddDistance((value, time));
+                                skip = bytes[i + 1] + 21;
+                                int value = int.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, bytes[i + 1]).ToArray()));    
+                                DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + bytes[i + 1] + 2, 19).ToArray()));
+                                this.testDataWindow.AddDistance((distance: value, time: time));
                                 break;
                             }
                         case Message.ValueId.SPEED:
                             {
-                                this.testDataWindow.AddSpeed((value, time));
+                                skip = 21;
+                                int value = bytes[i + 1];
+                                DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+                                this.testDataWindow.AddSpeed((speed: value, time: time));
                                 break;
                             }
                         case Message.ValueId.CYCLE_RHYTHM:
                             {
-                                this.testDataWindow.AddCycleRyhthm((value, time));
+                                skip = 21;
+                                int value = bytes[i + 1];
+                                DateTime time = DateTime.Parse(Encoding.UTF8.GetString(bytes.GetRange(i + 2, 19).ToArray()));
+                                this.testDataWindow.AddCycleRyhthm((cycleRhythm: value, time: time));
                                 break;
                             }
                     }
@@ -274,8 +317,10 @@ namespace ÄstrandTestSpecialistClient
         {
             if (cmf_TestNames.SelectedValue != null)
             {
+                string filename = cmf_TestNames.SelectedValue.ToString();
+                filename = filename.Replace(":", "#");
                 btn_GetTests.IsEnabled = false;
-                this.astrandClient.Transmit(new Message(Message.ID.GET_TEST_DATA, Message.State.NONE, Encoding.UTF8.GetBytes((string)cmf_TestNames.SelectedValue)));
+                this.astrandClient.Transmit(new Message(Message.ID.GET_TEST_DATA, Message.State.NONE, Encoding.UTF8.GetBytes(filename)));
             }
             else
                 MessageBox.Show("Er is geen test geselecteerd!");

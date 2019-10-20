@@ -70,7 +70,7 @@ namespace ÄstrandTestServer.Net
                 startBytes.Add((this.HasSteadyState) ? (byte)1 : (byte)0);
                 startBytes.Add((byte)this.VO2.ToString().Length);
                 startBytes.AddRange(Encoding.UTF8.GetBytes(this.VO2.ToString()));
-                userAccount.Connection.Transmit(DataEncryptor.Encrypt(new Message(Message.ID.TEST_DATA_BEGIN, Message.State.OK, startBytes.ToArray()).GetBytes(), DataEncryptor.NetworkKey));
+                userAccount.Connection.Transmit(new Message(Message.ID.TEST_DATA_BEGIN, Message.State.OK, startBytes.ToArray()).GetBytes());
 
                 int maxLength = GetMaxLength();
                 for (int i = 0; i < maxLength; i++)
@@ -89,7 +89,9 @@ namespace ÄstrandTestServer.Net
                     if (DistanceValues.Count - 1 > i)
                     {
                         bytes.Add((byte)Message.ValueId.DISTANCE);
-                        bytes.Add((byte)DistanceValues[i].distance);
+                        string distance = DistanceValues[i].distance.ToString();
+                        bytes.Add((byte)Encoding.UTF8.GetBytes(distance).Length);
+                        bytes.AddRange(Encoding.UTF8.GetBytes(distance));
                         bytes.AddRange(Encoding.UTF8.GetBytes(DistanceValues[i].time.ToString()));
                     }
 
@@ -107,13 +109,13 @@ namespace ÄstrandTestServer.Net
                         bytes.AddRange(Encoding.UTF8.GetBytes(CycleRhythmValues[i].time.ToString()));
                     }
 
-                    userAccount.Connection.Transmit(DataEncryptor.Encrypt(new Message(Message.ID.TEST_DATA, Message.State.OK, bytes.ToArray()).GetBytes(), DataEncryptor.NetworkKey));
+                    userAccount.Connection.Transmit(new Message(Message.ID.TEST_DATA, Message.State.OK, bytes.ToArray()).GetBytes());
                 }
 
                 List<byte> endBytes = new List<byte>();
                 endBytes.Add((byte)this.Username.Length);
                 endBytes.AddRange(Encoding.UTF8.GetBytes(this.Username));
-                userAccount.Connection.Transmit(DataEncryptor.Encrypt(new Message(Message.ID.TEST_DATA_END, Message.State.OK, endBytes.ToArray()).GetBytes(), DataEncryptor.NetworkKey));
+                userAccount.Connection.Transmit(new Message(Message.ID.TEST_DATA_END, Message.State.OK, endBytes.ToArray()).GetBytes());
             }
         }
 

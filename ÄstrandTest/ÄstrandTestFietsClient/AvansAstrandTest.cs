@@ -188,6 +188,17 @@ namespace ÄstrandTestFietsClient
         public void OnHeartrateReceived(int heartrate)
         {
             this.currentHeartrate = heartrate;
+
+            // Change resistance in relation with the heartbeats per minute
+            if (this.state == State.TESTFASE1)
+            {
+                if (this.currentHeartrate < 130 && this.currentResistance != 100)
+                {
+                    this.currentResistance += 1;
+                    this.bike?.SetResistence((byte)this.currentResistance);
+                    this.connector?.OnAstrandTestSetResistance(this.currentResistance);
+                }
+            }
         }
 
         public void OnDistanceRecieved(int distance)
@@ -197,38 +208,49 @@ namespace ÄstrandTestFietsClient
 
         public void OnCycleRyhthmReceived(int cycleRyhthm)
         {
-            if(this.state == State.TESTFASE1 || this.state == State.TESTFASE2)
+            if (this.state == State.TESTFASE1 || this.state == State.TESTFASE2)
             {
                 if (cycleRyhthm >= 60)
-                {
-                    if (this.currentResistance < 65)
-                        this.currentResistance += 5;
-                    this.bike?.SetResistence((byte)this.currentResistance);
                     this.connector?.OnAstrandTestToFast();
-                    if(this.state == State.TESTFASE1)
-                        this.connector?.OnAstrandTestSetResistance(this.currentResistance);
-                }
-                else if(cycleRyhthm <= 50)
-                {
-                    if (this.currentResistance > 10)
-                        this.currentResistance -= 5;
-                    this.bike?.SetResistence((byte)this.currentResistance);
+                else if (cycleRyhthm <= 50)
                     this.connector?.OnAstrandTestToSlow();
-                    if (this.state == State.TESTFASE1)
-                        this.connector?.OnAstrandTestSetResistance(this.currentResistance);
-                }
-                else if(cycleRyhthm > 50 && cycleRyhthm < 60)
-                {
-                    if (this.currentResistance < 30)
-                        this.currentResistance += 5;
-                    else if (this.currentResistance > 30)
-                        this.currentResistance -= 5;
-                    this.bike?.SetResistence((byte)this.currentResistance);
+                else if (cycleRyhthm > 50 && cycleRyhthm < 60)
                     this.connector?.OnAstrandTestGoodSpeed();
-                    if (this.state == State.TESTFASE1)
-                        this.connector?.OnAstrandTestSetResistance(this.currentResistance);
-                }
             }
+
+            // Change resistance in relation with the cyleryhthm
+            //if(this.state == State.TESTFASE1 || this.state == State.TESTFASE2)
+            //{
+            //    if (cycleRyhthm >= 60)
+            //    {
+            //        if (this.currentResistance < 65)
+            //            this.currentResistance += 5;
+            //        this.bike?.SetResistence((byte)this.currentResistance);
+            //        this.connector?.OnAstrandTestToFast();
+            //        if(this.state == State.TESTFASE1)
+            //            this.connector?.OnAstrandTestSetResistance(this.currentResistance);
+            //    }
+            //    else if(cycleRyhthm <= 50)
+            //    {
+            //        if (this.currentResistance > 10)
+            //            this.currentResistance -= 5;
+            //        this.bike?.SetResistence((byte)this.currentResistance);
+            //        this.connector?.OnAstrandTestToSlow();
+            //        if (this.state == State.TESTFASE1)
+            //            this.connector?.OnAstrandTestSetResistance(this.currentResistance);
+            //    }
+            //    else if(cycleRyhthm > 50 && cycleRyhthm < 60)
+            //    {
+            //        if (this.currentResistance < 30)
+            //            this.currentResistance += 5;
+            //        else if (this.currentResistance > 30)
+            //            this.currentResistance -= 5;
+            //        this.bike?.SetResistence((byte)this.currentResistance);
+            //        this.connector?.OnAstrandTestGoodSpeed();
+            //        if (this.state == State.TESTFASE1)
+            //            this.connector?.OnAstrandTestSetResistance(this.currentResistance);
+            //    }
+            //}
         }
 
         private bool HasSteadyState(List<int> heartrates)
