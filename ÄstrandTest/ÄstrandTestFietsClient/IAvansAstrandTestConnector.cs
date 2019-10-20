@@ -10,7 +10,7 @@ namespace ÄstrandTestFietsClient
     {
         void OnAstrandTestStart();
         void OnAstrandTestEnd(bool hasSteadyState, double vo2);
-        void OnAstrandTestAbort();
+        void OnAstrandTestAbort(string message);
         void OnAstrandTestToFast();
         void OnAstrandTestToSlow();
         void OnAstrandTestGoodSpeed();

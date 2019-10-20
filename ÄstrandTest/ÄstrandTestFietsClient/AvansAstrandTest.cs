@@ -35,6 +35,7 @@ namespace ÄstrandTestFietsClient
 
         private bool isMan;
         private int age;
+        private int maxHF;
 
         private int workload;
         private bool hasSteadyState;
@@ -63,6 +64,7 @@ namespace ÄstrandTestFietsClient
 
             this.isMan = isMan;
             this.age = age;
+            this.maxHF = GetMaxHeartrate();
 
             this.workload = 0;
             this.hasSteadyState = false;
@@ -172,7 +174,7 @@ namespace ÄstrandTestFietsClient
             }
         }
 
-        public void Stop()
+        public void Stop(string message)
         {
             if(this.IsRunning)
             {
@@ -181,13 +183,19 @@ namespace ÄstrandTestFietsClient
                 this.state = State.NONE;
                 this.displayTimer.Stop();
                 this.testTimer.Stop();
-                this.connector?.OnAstrandTestAbort();
+                this.connector?.OnAstrandTestAbort(message);
             }
         }
 
         public void OnHeartrateReceived(int heartrate)
         {
             this.currentHeartrate = heartrate;
+
+            if (this.currentHeartrate >= maxHF - 10)
+            {
+                Stop("De test is afgebroken omdat de maximale hartfrequentie wordt benaderd!\n\nDe maximale hartfrequentie van de cliënt is " + this.maxHF);
+                return;
+            }
 
             // Change resistance in relation with the heartbeats per minute
             if (this.state == State.TESTFASE1)
@@ -303,6 +311,31 @@ namespace ÄstrandTestFietsClient
             }
 
             return factor;
+        }
+
+        private int GetMaxHeartrate()
+        {
+            List<(int age, int maxHeartrate)> heratrates = new List<(int age, int maxHeartrate)>()
+            {
+                (15, 210),
+                (25, 200),
+                (35, 190),
+                (40, 180),
+                (45, 170),
+                (50, 160),
+                (55, 150)
+            };
+
+            int maxHeartrate = 0;
+            foreach ((int age, int maxHeartrate) heartrate in heratrates)
+            {
+                if (this.age >= heartrate.age)
+                    maxHeartrate = heartrate.maxHeartrate;
+                else
+                    break;
+            }
+
+            return maxHeartrate;
         }
     }
 }

@@ -95,7 +95,7 @@ namespace ÄstrandTestFietsClient
                     txf_BikeId.IsEnabled = true;
                     btn_ConnectToBike.IsEnabled = true;
                     btn_ConnectToBike.Foreground = Brushes.White;
-                    MessageBox.Show("Could not connect to bike!");
+                    MessageBox.Show("Kon geen verbinding maken met de fiets!");
                 }
             }
             else
@@ -223,7 +223,7 @@ namespace ÄstrandTestFietsClient
                 this.testHeartrate = 60;
                 this.testDistance = 0;
 
-                this.astrandTest.Stop();
+                this.astrandTest.Stop("De test is handmatig afebroken!");
             }
         }
 
@@ -250,9 +250,10 @@ namespace ÄstrandTestFietsClient
             this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, bytes.ToArray()));
         }
 
-        public void OnAstrandTestAbort()
+        public void OnAstrandTestAbort(string message)
         {
             this.astrandClient.Transmit(new Message(Message.ID.END_TEST, Message.State.NONE, null));
+            MessageBox.Show(message);
         }
 
         public void OnAstrandTestToFast()
