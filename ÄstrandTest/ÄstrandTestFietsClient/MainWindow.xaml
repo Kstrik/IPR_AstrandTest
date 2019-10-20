@@ -64,7 +64,7 @@
                             </WrapPanel>
                             <Label Content="Steady state behaald:" Foreground="White" FontSize="12"></Label>
                             <Label x:Name="lbl_SteadyState" Content="NEE" Foreground="Orange" FontSize="12"></Label>
-                            <Label Content="VO2:" Foreground="White" FontSize="12"></Label>
+                            <Label Content="VO2max:" Foreground="White" FontSize="12"></Label>
                             <Label x:Name="lbl_VO2" Content="Nog niet berekend" Foreground="Orange" FontSize="12"></Label>
                         </StackPanel>
                     </Grid>

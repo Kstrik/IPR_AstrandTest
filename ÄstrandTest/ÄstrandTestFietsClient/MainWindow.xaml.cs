@@ -240,7 +240,7 @@ namespace ÄstrandTestFietsClient
                 if (this.testDataThread != null)
                     this.testDataThread.Abort();
 
-                lbl_VO2.Content = Math.Round(vo2, 2).ToString() + ((hasSteadyState) ? "" : " (Steady state kon niet worden berekend!)");
+                lbl_VO2.Content = Math.Round(vo2, 2).ToString() + ((hasSteadyState) ? "" : " (Steady state is niet behaald waarde is niet betrouwbaar!)");
                 lbl_VO2.Foreground = Brushes.Green;
             }));
 

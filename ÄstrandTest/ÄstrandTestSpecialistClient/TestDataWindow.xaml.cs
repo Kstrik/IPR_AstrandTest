@@ -81,7 +81,7 @@ namespace ÄstrandTestSpecialistClient
             lbl_VO2.Content = vo2;
 
             if (!hasSteadyState)
-                lbl_SteadyStateNotification.Content = "Er was geen steady state, vo2 meeting is niet betrouwbaar!";
+                lbl_SteadyStateNotification.Content = "Er was geen steady state behaald, VO2max waarde is niet betrouwbaar!";
         }
 
         public void ProcessHistoryData()
